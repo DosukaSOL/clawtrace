@@ -104,6 +104,8 @@ OpenClaw agents use models like Claude Opus 4, GPT-4o, and others to execute com
 
 Clawtrace also works with any AI system — OpenAI, Anthropic, LangChain, custom agents — but it's designed with the OpenClaw workflow in mind.
 
+> **Disclaimer:** Clawtrace is an **independent community project**. It is not made by, affiliated with, or endorsed by the OpenClaw team. We're simply contributing to the ecosystem because we believe OpenClaw users deserve great debugging tools.
+
 > **Links:** [OpenClaw Website](https://openclaw.ai/) · [OpenClaw GitHub](https://github.com/openclaw/openclaw) · [OpenClaw Docs](https://docs.openclaw.ai/) · [OpenClaw Discord](https://discord.gg/clawd) · [@openclaw on X](https://x.com/openclaw)
 
 ---
@@ -580,6 +582,8 @@ A: Yes. MIT licensed. Copy the files, serve them. No attribution required (but a
 
 [Get Started](#-quick-start) · [Report a Bug](https://github.com/DosukaSOL/clawtrace/issues) · [Request a Feature](https://github.com/DosukaSOL/clawtrace/issues)
 
-MIT License · Made with &#x2756; by [DosukaSOL](https://github.com/DosukaSOL) · Built for [OpenClaw](https://openclaw.ai/) 🦞
+MIT License · Made with &#x2756; by [DosukaSOL](https://github.com/DosukaSOL)
+
+Independent community project · Not affiliated with or endorsed by the [OpenClaw](https://openclaw.ai/) team 🦞
 
 </div>

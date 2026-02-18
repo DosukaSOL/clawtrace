@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none';">
 <title>Clawtrace — Trace Replay Mode Preview</title>
 <style>
 /* ── Base ────────────────────────────────────────── */
@@ -192,7 +193,7 @@ h1{font-size:1.6rem;margin-bottom:4px}
     stepEl.appendChild(content);
 
     // Clear empty message on first step
-    if (index === 0) { stage.innerHTML = ''; }
+    if (index === 0) { while (stage.firstChild) stage.removeChild(stage.firstChild); }
     stage.appendChild(stepEl);
 
     // Typing animation
@@ -255,7 +256,15 @@ h1{font-size:1.6rem;margin-bottom:4px}
     pause();
     if (typingTimer) { clearInterval(typingTimer); typingTimer = null; }
     currentStep = -1;
-    stage.innerHTML = '<div class="replay-empty">Press <strong>Play</strong> to watch the AI trace unfold step by step.</div>';
+    while (stage.firstChild) stage.removeChild(stage.firstChild);
+    var emptyDiv = document.createElement('div');
+    emptyDiv.className = 'replay-empty';
+    emptyDiv.textContent = 'Press ';
+    var strong = document.createElement('strong');
+    strong.textContent = 'Play';
+    emptyDiv.appendChild(strong);
+    emptyDiv.appendChild(document.createTextNode(' to watch the AI trace unfold step by step.'));
+    stage.appendChild(emptyDiv);
     updateProgress();
   }
 
@@ -273,7 +282,7 @@ h1{font-size:1.6rem;margin-bottom:4px}
     if (typingTimer) { clearInterval(typingTimer); typingTimer = null; }
     currentStep--;
     // Re-render all steps up to current
-    stage.innerHTML = '';
+    while (stage.firstChild) stage.removeChild(stage.firstChild);
     for (var i = 0; i <= currentStep; i++) {
       var step = TRACE[i];
       var stepEl = document.createElement('div');
