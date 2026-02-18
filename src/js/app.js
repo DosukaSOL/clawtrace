@@ -32,6 +32,25 @@ Clawtrace.App = (function () {
     var CC = Clawtrace.CostCalc;
     var BR = Clawtrace.BugReport;
     var FG = Clawtrace.FlowGraph;
+    var SES = Clawtrace.Session;
+    var TP = Clawtrace.ToolProfiler;
+    var AM = Clawtrace.AgentMap;
+    var CHD = Clawtrace.ChannelDiff;
+    var RT = Clawtrace.Routing;
+    var CMD = Clawtrace.ChatCmd;
+    var SKG = Clawtrace.SkillGraph;
+    var CVR = Clawtrace.CanvasReplay;
+    var VV = Clawtrace.VoiceView;
+    var BRR = Clawtrace.BrowserReplay;
+    var NA = Clawtrace.NodeActivity;
+    var CRT = Clawtrace.CronTimeline;
+    var INJ = Clawtrace.InjScan;
+    var SBX = Clawtrace.Sandbox;
+    var BEN = Clawtrace.Benchmark;
+    var FO = Clawtrace.Failover;
+    var CFG = Clawtrace.ConfigRec;
+    var TI = Clawtrace.TraceIssue;
+    var TS = Clawtrace.TraceShare;
 
     /* ---- State ---- */
     var _currentView = 'input';
@@ -57,6 +76,25 @@ Clawtrace.App = (function () {
         CC.init(dom.costcalcContainer);
         BR.init(dom.bugreportContainer);
         FG.init(dom.flowgraphContainer);
+        SES.init(dom.sessionContainer);
+        TP.init(dom.toolprofilerContainer);
+        AM.init(dom.agentmapContainer);
+        CHD.init(dom.channeldiffContainer);
+        RT.init(dom.routingContainer);
+        CMD.init(dom.chatcmdContainer);
+        SKG.init(dom.skillgraphContainer);
+        CVR.init(dom.canvasreplayContainer);
+        VV.init(dom.voiceviewContainer);
+        BRR.init(dom.browserreplayContainer);
+        NA.init(dom.nodeactivityContainer);
+        CRT.init(dom.crontimelineContainer);
+        INJ.init(dom.injscanContainer);
+        SBX.init(dom.sandboxContainer);
+        BEN.init(dom.benchmarkContainer);
+        FO.init(dom.failoverContainer);
+        CFG.init(dom.configrecContainer);
+        TI.init(dom.traceissueContainer);
+        TS.init(dom.traceshareContainer);
         applyStoredTheme();
         checkShareURL();
         setStatus('Ready — Load an AI interaction trace to begin.');
@@ -116,13 +154,34 @@ Clawtrace.App = (function () {
         // Theme
         dom.btnThemeToggle = document.getElementById('btn-theme-toggle');
 
-        // New views
+        // v1.1 views
         dom.replayContainer = document.getElementById('replay-container');
         dom.heatmapContainer = document.getElementById('heatmap-container');
         dom.radarContainer = document.getElementById('radar-container');
         dom.costcalcContainer = document.getElementById('costcalc-container');
         dom.bugreportContainer = document.getElementById('bugreport-container');
         dom.flowgraphContainer = document.getElementById('flowgraph-container');
+
+        // v2.0 views
+        dom.sessionContainer = document.getElementById('session-container');
+        dom.toolprofilerContainer = document.getElementById('toolprofiler-container');
+        dom.agentmapContainer = document.getElementById('agentmap-container');
+        dom.channeldiffContainer = document.getElementById('channeldiff-container');
+        dom.routingContainer = document.getElementById('routing-container');
+        dom.chatcmdContainer = document.getElementById('chatcmd-container');
+        dom.skillgraphContainer = document.getElementById('skillgraph-container');
+        dom.canvasreplayContainer = document.getElementById('canvasreplay-container');
+        dom.voiceviewContainer = document.getElementById('voiceview-container');
+        dom.browserreplayContainer = document.getElementById('browserreplay-container');
+        dom.nodeactivityContainer = document.getElementById('nodeactivity-container');
+        dom.crontimelineContainer = document.getElementById('crontimeline-container');
+        dom.injscanContainer = document.getElementById('injscan-container');
+        dom.sandboxContainer = document.getElementById('sandbox-container');
+        dom.benchmarkContainer = document.getElementById('benchmark-container');
+        dom.failoverContainer = document.getElementById('failover-container');
+        dom.configrecContainer = document.getElementById('configrec-container');
+        dom.traceissueContainer = document.getElementById('traceissue-container');
+        dom.traceshareContainer = document.getElementById('traceshare-container');
     }
 
     /**
@@ -350,6 +409,27 @@ Clawtrace.App = (function () {
                 CC.render(_traceData);
                 BR.render(_traceData, _analysisResult);
                 FG.render(_traceData);
+
+                // v2.0 views
+                SES.render(_traceData);
+                TP.render(_traceData);
+                AM.render(_traceData);
+                CHD.render(_traceData, _analysisResult);
+                RT.render(_traceData);
+                CMD.render(_traceData);
+                SKG.render(_traceData);
+                CVR.render(_traceData);
+                VV.render(_traceData);
+                BRR.render(_traceData);
+                NA.render(_traceData);
+                CRT.render(_traceData);
+                INJ.render(_traceData);
+                SBX.render(_traceData);
+                BEN.render(_traceData, _analysisResult);
+                FO.render(_traceData);
+                CFG.render(_traceData, _analysisResult);
+                TI.render(_traceData, _analysisResult);
+                TS.render(_traceData);
 
                 // Enable export buttons
                 dom.btnExportJSON.disabled = false;
@@ -698,6 +778,27 @@ Clawtrace.App = (function () {
                 BR.render(_traceData, _analysisResult);
                 FG.render(_traceData);
 
+                // v2.0 views
+                SES.render(_traceData);
+                TP.render(_traceData);
+                AM.render(_traceData);
+                CHD.render(_traceData, _analysisResult);
+                RT.render(_traceData);
+                CMD.render(_traceData);
+                SKG.render(_traceData);
+                CVR.render(_traceData);
+                VV.render(_traceData);
+                BRR.render(_traceData);
+                NA.render(_traceData);
+                CRT.render(_traceData);
+                INJ.render(_traceData);
+                SBX.render(_traceData);
+                BEN.render(_traceData, _analysisResult);
+                FO.render(_traceData);
+                CFG.render(_traceData, _analysisResult);
+                TI.render(_traceData, _analysisResult);
+                TS.render(_traceData);
+
                 dom.btnExportJSON.disabled = false;
                 dom.btnExportMd.disabled = false;
                 dom.btnExportHTML.disabled = false;
@@ -789,56 +890,90 @@ Clawtrace.App = (function () {
         return JSON.stringify([
             {
                 "role": "system",
-                "content": "You are a helpful coding assistant. Answer concisely and provide working code examples."
+                "content": "You are Pi, an OpenClaw AI agent. Connected via Gateway (ws://127.0.0.1:18789). Session: main. Model: claude-opus-4-6. Thinking: medium. Channels: WhatsApp, Telegram, Discord. Sandbox: non-main."
             },
             {
                 "role": "user",
-                "content": "How do I reverse a string in Python?"
+                "content": "/status"
             },
             {
                 "role": "assistant",
-                "content": "You can reverse a string in Python using slicing:\n\n```python\ntext = \"Hello, World!\"\nreversed_text = text[::-1]\nprint(reversed_text)  # Output: !dlroW ,olleH\n```\n\nAlternatively, you can use the `reversed()` function:\n\n```python\nreversed_text = ''.join(reversed(text))\n```"
+                "content": "**Status Report**\n- Model: claude-opus-4-6\n- Session: main (elevated)\n- Thinking: medium\n- Verbose: off\n- Connected channels: WhatsApp, Telegram, Discord\n- Uptime: 4h 23m\n- Context: 18,432 / 200,000 tokens\n- Skills: 12 active (3 custom)\n- Nodes: macOS (primary), iOS (connected)"
             },
             {
                 "role": "user",
-                "content": "What about JavaScript?"
+                "content": "Can you check what cron jobs are running and then read my calendar for tomorrow?"
             },
             {
                 "role": "assistant",
-                "content": "In JavaScript, you can reverse a string by converting it to an array, reversing, and joining:\n\n```javascript\nconst text = \"Hello, World!\";\nconst reversed = text.split('').reverse().join('');\nconsole.log(reversed); // !dlroW ,olleH\n```\n\nNote: This doesn't handle Unicode characters properly. For Unicode-safe reversal:\n\n```javascript\nconst reversed = [...text].reverse().join('');\n```"
-            },
-            {
-                "role": "user",
-                "content": "Can you write a function that handles edge cases?"
-            },
-            {
-                "role": "assistant",
-                "content": "I think this should handle most cases, though I'm not entirely sure about all emoji combinations:\n\n```javascript\nfunction reverseString(str) {\n  if (typeof str !== 'string') return '';\n  if (str.length <= 1) return str;\n  return [...str].reverse().join('');\n}\n```\n\nActually, wait — let me correct that. The spread operator handles most Unicode but may still have issues with some complex emoji sequences using ZWJ (Zero Width Joiner). For production use, you might want a library like `grapheme-splitter`.",
+                "content": "I'll check your cron jobs and calendar. Let me use the tools.",
                 "tool_calls": [
                     {
                         "function": {
-                            "name": "code_search",
-                            "arguments": "{\"query\": \"Unicode-safe string reversal JavaScript\"}"
+                            "name": "cron.list",
+                            "arguments": "{}"
                         }
                     }
                 ]
             },
             {
                 "role": "tool",
-                "content": "Found 3 results:\n1. MDN: String.prototype.split() - recommends Array.from() for Unicode\n2. Stack Overflow: Reversing Unicode strings - discusses grapheme clusters\n3. TC39 Proposal: Intl.Segmenter - native grapheme segmentation",
-                "name": "code_search"
+                "content": "Active cron jobs:\n1. daily-summary (0 9 * * *) - Generate daily briefing\n2. backup-notes (0 2 * * *) - Backup workspace notes\n3. weather-check (0 7 * * *) - Morning weather report",
+                "name": "cron.list"
             },
             {
                 "role": "assistant",
-                "content": "Based on the search results, here's a more robust solution:\n\n```javascript\nfunction reverseString(str) {\n  if (typeof str !== 'string') return '';\n  if (str.length <= 1) return str;\n  \n  // Use Intl.Segmenter for proper grapheme handling\n  if (typeof Intl !== 'undefined' && Intl.Segmenter) {\n    const segmenter = new Intl.Segmenter('en', { granularity: 'grapheme' });\n    const segments = [...segmenter.segment(str)];\n    return segments.map(s => s.segment).reverse().join('');\n  }\n  \n  // Fallback for older browsers\n  return [...str].reverse().join('');\n}\n```\n\nThis handles emoji like 👨‍👩‍👧‍👦 correctly in modern browsers."
+                "content": "Found 3 cron jobs. Now checking your calendar.",
+                "tool_calls": [
+                    {
+                        "function": {
+                            "name": "bash",
+                            "arguments": "{\"command\": \"cat ~/.openclaw/workspace/skills/calendar/data.json | jq '.events[] | select(.date==\\\"2025-01-16\\\")'\"}"
+                        }
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "{\"title\": \"Team standup\", \"time\": \"09:00\", \"duration\": \"30m\"}\n{\"title\": \"Design review\", \"time\": \"14:00\", \"duration\": \"1h\"}\n{\"title\": \"Gym\", \"time\": \"18:00\", \"duration\": \"1h\"}",
+                "name": "bash"
+            },
+            {
+                "role": "assistant",
+                "content": "Here's your overview:\n\n**Cron Jobs (3 active)**:\n- Daily summary at 9 AM\n- Notes backup at 2 AM\n- Weather check at 7 AM\n\n**Tomorrow's Calendar**:\n- 09:00 — Team standup (30 min)\n- 14:00 — Design review (1 hour)\n- 18:00 — Gym (1 hour)\n\nYou have a clear morning after standup. Want me to schedule anything?"
             },
             {
                 "role": "user",
-                "content": "That's great! How does performance compare?"
+                "content": "Send a message to my work-assistant session: prepare the design review notes"
             },
             {
                 "role": "assistant",
-                "content": "Performance comparison for reversing a 10,000-character string:\n\n| Method | Operations/sec | Notes |\n|--------|---------------|-------|\n| split/reverse/join | ~150,000 | Fastest, not Unicode-safe |\n| [...spread].reverse | ~45,000 | Good Unicode support |\n| Intl.Segmenter | ~12,000 | Best Unicode support |\n| for loop (manual) | ~120,000 | Fast, not Unicode-safe |\n\nFor most applications, the spread operator approach offers the best balance of correctness and performance. The Intl.Segmenter approach is best when you need to handle complex emoji sequences correctly.\n\nNote: These are approximate benchmarks and may vary by environment."
+                "content": "Sending to work-assistant session.",
+                "tool_calls": [
+                    {
+                        "function": {
+                            "name": "sessions_send",
+                            "arguments": "{\"target\": \"work-assistant\", \"message\": \"Please prepare the design review notes for the 2 PM meeting tomorrow. Focus on the UI mockups and the feedback from last week.\", \"flags\": [\"REPLY_SKIP\"]}"
+                        }
+                    }
+                ]
+            },
+            {
+                "role": "tool",
+                "content": "Message sent to session: work-assistant",
+                "name": "sessions_send"
+            },
+            {
+                "role": "assistant",
+                "content": "Done! Message sent to your work-assistant session. It will prepare the design review notes and the results will be ready when you check that session.\n\nNote: The work-assistant session runs in sandbox mode (non-main), so it has limited tool access — no browser or cron, but it can read/write files in the workspace."
+            },
+            {
+                "role": "user",
+                "content": "/compact"
+            },
+            {
+                "role": "assistant",
+                "content": "Context compacted. Pruned 6,200 tokens of older conversation history. Current usage: 12,232 / 200,000 tokens."
             }
         ], null, 2);
     }

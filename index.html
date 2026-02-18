@@ -40,39 +40,53 @@
                 <span class="logo-tagline">AI Reasoning Explorer</span>
             </div>
             <nav class="header-nav" aria-label="Main navigation">
-                <button class="nav-btn active" data-view="input" aria-current="page">
-                    <span class="nav-icon" aria-hidden="true">&#9656;</span> Input
-                </button>
-                <button class="nav-btn" data-view="timeline">
-                    <span class="nav-icon" aria-hidden="true">&#9776;</span> Timeline
-                </button>
-                <button class="nav-btn" data-view="analyzer">
-                    <span class="nav-icon" aria-hidden="true">&#9881;</span> Analyzer
-                </button>
-                <button class="nav-btn" data-view="comparison">
-                    <span class="nav-icon" aria-hidden="true">&#8644;</span> Compare
-                </button>
-                <button class="nav-btn" data-view="export">
-                    <span class="nav-icon" aria-hidden="true">&#8615;</span> Export
-                </button>
-                <button class="nav-btn" data-view="replay">
-                    <span class="nav-icon" aria-hidden="true">&#9654;</span> Replay
-                </button>
-                <button class="nav-btn" data-view="heatmap">
-                    <span class="nav-icon" aria-hidden="true">&#9608;</span> Heatmap
-                </button>
-                <button class="nav-btn" data-view="radar">
-                    <span class="nav-icon" aria-hidden="true">&#9678;</span> Radar
-                </button>
-                <button class="nav-btn" data-view="costcalc">
-                    <span class="nav-icon" aria-hidden="true">&#36;</span> Cost
-                </button>
-                <button class="nav-btn" data-view="bugreport">
-                    <span class="nav-icon" aria-hidden="true">&#128196;</span> Bug Report
-                </button>
-                <button class="nav-btn" data-view="flowgraph">
-                    <span class="nav-icon" aria-hidden="true">&#9670;</span> Flow
-                </button>
+                <div class="nav-group">
+                    <button class="nav-btn active" data-view="input" aria-current="page">Input</button>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-label">Core</span>
+                    <button class="nav-btn" data-view="timeline">Timeline</button>
+                    <button class="nav-btn" data-view="analyzer">Analyzer</button>
+                    <button class="nav-btn" data-view="comparison">Compare</button>
+                    <button class="nav-btn" data-view="heatmap">Heatmap</button>
+                    <button class="nav-btn" data-view="radar">Radar</button>
+                    <button class="nav-btn" data-view="flowgraph">Flow</button>
+                    <button class="nav-btn" data-view="replay">Replay</button>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-label">OpenClaw</span>
+                    <button class="nav-btn" data-view="session">Session</button>
+                    <button class="nav-btn" data-view="toolprofiler">Tools</button>
+                    <button class="nav-btn" data-view="agentmap">Agents</button>
+                    <button class="nav-btn" data-view="channeldiff">Channels</button>
+                    <button class="nav-btn" data-view="routing">Routing</button>
+                    <button class="nav-btn" data-view="chatcmd">Chat Cmds</button>
+                    <button class="nav-btn" data-view="skillgraph">Skills</button>
+                    <button class="nav-btn" data-view="canvasreplay">Canvas</button>
+                    <button class="nav-btn" data-view="voiceview">Voice</button>
+                    <button class="nav-btn" data-view="browserreplay">Browser</button>
+                    <button class="nav-btn" data-view="nodeactivity">Nodes</button>
+                    <button class="nav-btn" data-view="crontimeline">Cron</button>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-label">Security</span>
+                    <button class="nav-btn" data-view="injscan">Inj. Scan</button>
+                    <button class="nav-btn" data-view="sandbox">Sandbox</button>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-label">Optimize</span>
+                    <button class="nav-btn" data-view="costcalc">Cost</button>
+                    <button class="nav-btn" data-view="benchmark">Benchmark</button>
+                    <button class="nav-btn" data-view="failover">Failover</button>
+                    <button class="nav-btn" data-view="configrec">Config</button>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-label">Export</span>
+                    <button class="nav-btn" data-view="export">Export</button>
+                    <button class="nav-btn" data-view="bugreport">Bug Report</button>
+                    <button class="nav-btn" data-view="traceissue">Issue</button>
+                    <button class="nav-btn" data-view="traceshare">Anonymize</button>
+                </div>
             </nav>
             <div class="header-actions">
                 <button id="btn-theme-toggle" class="icon-btn" aria-label="Toggle light/dark theme" title="Toggle theme">
@@ -299,11 +313,144 @@
             <div id="flowgraph-container" role="region" aria-label="Reasoning flow graph"></div>
         </section>
 
+        <!-- ===== SESSION INSPECTOR VIEW ===== -->
+        <section id="view-session" class="view" aria-labelledby="session-heading" hidden>
+            <h2 id="session-heading" class="view-title">Gateway Session Inspector</h2>
+            <p class="view-desc">OpenClaw session metadata, context window usage, and session pruning recommendations.</p>
+            <div id="session-container" role="region" aria-label="Session inspector"></div>
+        </section>
+
+        <!-- ===== TOOL PROFILER VIEW ===== -->
+        <section id="view-toolprofiler" class="view" aria-labelledby="toolprofiler-heading" hidden>
+            <h2 id="toolprofiler-heading" class="view-title">Tool Call Profiler</h2>
+            <p class="view-desc">Categorized analysis of every tool call — execution, filesystem, browser, canvas, automation, multi-agent, and device tools.</p>
+            <div id="toolprofiler-container" role="region" aria-label="Tool profiler"></div>
+        </section>
+
+        <!-- ===== AGENT MAP VIEW ===== -->
+        <section id="view-agentmap" class="view" aria-labelledby="agentmap-heading" hidden>
+            <h2 id="agentmap-heading" class="view-title">Agent-to-Agent Flow Map</h2>
+            <p class="view-desc">Visualize multi-agent orchestration — sessions_send, sessions_list, sessions_history, and sessions_spawn interactions.</p>
+            <div id="agentmap-container" role="region" aria-label="Agent flow map"></div>
+        </section>
+
+        <!-- ===== CHANNEL DIFF VIEW ===== -->
+        <section id="view-channeldiff" class="view" aria-labelledby="channeldiff-heading" hidden>
+            <h2 id="channeldiff-heading" class="view-title">Multi-Channel Trace Diff</h2>
+            <p class="view-desc">Analyze how responses adapt across WhatsApp, Telegram, Discord, Slack, Signal, iMessage, and more.</p>
+            <div id="channeldiff-container" role="region" aria-label="Channel diff"></div>
+        </section>
+
+        <!-- ===== ROUTING VIEW ===== -->
+        <section id="view-routing" class="view" aria-labelledby="routing-heading" hidden>
+            <h2 id="routing-heading" class="view-title">Channel Routing Visualizer</h2>
+            <p class="view-desc">Visual flow diagram of message routing: Channels → Gateway → Agent → Tools with DM policy and activation analysis.</p>
+            <div id="routing-container" role="region" aria-label="Routing visualizer"></div>
+        </section>
+
+        <!-- ===== CHAT COMMANDS VIEW ===== -->
+        <section id="view-chatcmd" class="view" aria-labelledby="chatcmd-heading" hidden>
+            <h2 id="chatcmd-heading" class="view-title">Chat Command Analyzer</h2>
+            <p class="view-desc">Detect and analyze OpenClaw slash commands: /status, /new, /compact, /think, /verbose, /usage, and more.</p>
+            <div id="chatcmd-container" role="region" aria-label="Chat command analyzer"></div>
+        </section>
+
+        <!-- ===== SKILL GRAPH VIEW ===== -->
+        <section id="view-skillgraph" class="view" aria-labelledby="skillgraph-heading" hidden>
+            <h2 id="skillgraph-heading" class="view-title">Skill Dependency Graph</h2>
+            <p class="view-desc">Map skill-to-tool dependencies. Detects builtin and custom skills from ~/.openclaw/workspace/skills.</p>
+            <div id="skillgraph-container" role="region" aria-label="Skill dependency graph"></div>
+        </section>
+
+        <!-- ===== CANVAS REPLAY VIEW ===== -->
+        <section id="view-canvasreplay" class="view" aria-labelledby="canvasreplay-heading" hidden>
+            <h2 id="canvasreplay-heading" class="view-title">Canvas / A2UI Replay</h2>
+            <p class="view-desc">Step through Canvas operations: push, reset, eval, snapshot. Visualize the agent-driven visual workspace state.</p>
+            <div id="canvasreplay-container" role="region" aria-label="Canvas replay"></div>
+        </section>
+
+        <!-- ===== VOICE VIEW ===== -->
+        <section id="view-voiceview" class="view" aria-labelledby="voiceview-heading" hidden>
+            <h2 id="voiceview-heading" class="view-title">Voice Interaction Viewer</h2>
+            <p class="view-desc">Analyze Voice Wake and Talk Mode traces — STT transcription, TTS synthesis, and the voice pipeline.</p>
+            <div id="voiceview-container" role="region" aria-label="Voice viewer"></div>
+        </section>
+
+        <!-- ===== BROWSER REPLAY VIEW ===== -->
+        <section id="view-browserreplay" class="view" aria-labelledby="browserreplay-heading" hidden>
+            <h2 id="browserreplay-heading" class="view-title">Browser Session Replay</h2>
+            <p class="view-desc">Replay browser tool actions: navigate, snapshot, click, type, scroll. Track URL history and interaction patterns.</p>
+            <div id="browserreplay-container" role="region" aria-label="Browser replay"></div>
+        </section>
+
+        <!-- ===== NODE ACTIVITY VIEW ===== -->
+        <section id="view-nodeactivity" class="view" aria-labelledby="nodeactivity-heading" hidden>
+            <h2 id="nodeactivity-heading" class="view-title">Node Activity Dashboard</h2>
+            <p class="view-desc">Track device-specific activity across macOS, iOS, and Android nodes — location, camera, screen recording, system actions.</p>
+            <div id="nodeactivity-container" role="region" aria-label="Node activity"></div>
+        </section>
+
+        <!-- ===== CRON TIMELINE VIEW ===== -->
+        <section id="view-crontimeline" class="view" aria-labelledby="crontimeline-heading" hidden>
+            <h2 id="crontimeline-heading" class="view-title">Cron &amp; Automation Timeline</h2>
+            <p class="view-desc">Visualize scheduled tasks: cron.create, webhooks, Gmail triggers, and timed automation events.</p>
+            <div id="crontimeline-container" role="region" aria-label="Cron timeline"></div>
+        </section>
+
+        <!-- ===== INJECTION SCANNER VIEW ===== -->
+        <section id="view-injscan" class="view" aria-labelledby="injscan-heading" hidden>
+            <h2 id="injscan-heading" class="view-title">Prompt Injection Scanner</h2>
+            <p class="view-desc">Scan traces for 23+ prompt injection patterns across critical, high, medium, and low severity levels.</p>
+            <div id="injscan-container" role="region" aria-label="Injection scanner"></div>
+        </section>
+
+        <!-- ===== SANDBOX VIEW ===== -->
+        <section id="view-sandbox" class="view" aria-labelledby="sandbox-heading" hidden>
+            <h2 id="sandbox-heading" class="view-title">Sandbox Boundary Inspector</h2>
+            <p class="view-desc">Classify tool calls as sandbox-allowed vs sandbox-denied. Visual boundary map of host vs sandboxed zones.</p>
+            <div id="sandbox-container" role="region" aria-label="Sandbox inspector"></div>
+        </section>
+
+        <!-- ===== BENCHMARK VIEW ===== -->
+        <section id="view-benchmark" class="view" aria-labelledby="benchmark-heading" hidden>
+            <h2 id="benchmark-heading" class="view-title">Performance Benchmark</h2>
+            <p class="view-desc">Compute efficiency scores, token usage, error rates, and optimization tips for your trace.</p>
+            <div id="benchmark-container" role="region" aria-label="Benchmark"></div>
+        </section>
+
+        <!-- ===== FAILOVER VIEW ===== -->
+        <section id="view-failover" class="view" aria-labelledby="failover-heading" hidden>
+            <h2 id="failover-heading" class="view-title">Model Failover Analyzer</h2>
+            <p class="view-desc">Track model switches, rate-limit retries, and failover events across the trace lifetime.</p>
+            <div id="failover-container" role="region" aria-label="Failover analyzer"></div>
+        </section>
+
+        <!-- ===== CONFIG ADVISOR VIEW ===== -->
+        <section id="view-configrec" class="view" aria-labelledby="configrec-heading" hidden>
+            <h2 id="configrec-heading" class="view-title">Config Recommendation Engine</h2>
+            <p class="view-desc">Generate openclaw.json configuration suggestions based on trace analysis patterns.</p>
+            <div id="configrec-container" role="region" aria-label="Config recommendations"></div>
+        </section>
+
+        <!-- ===== TRACE ISSUE VIEW ===== -->
+        <section id="view-traceissue" class="view" aria-labelledby="traceissue-heading" hidden>
+            <h2 id="traceissue-heading" class="view-title">Trace-to-Issue Pipeline</h2>
+            <p class="view-desc">Generate GitHub-ready issue templates from trace analysis with steps to reproduce, environment, and error details.</p>
+            <div id="traceissue-container" role="region" aria-label="Trace issue generator"></div>
+        </section>
+
+        <!-- ===== TRACE SHARE VIEW ===== -->
+        <section id="view-traceshare" class="view" aria-labelledby="traceshare-heading" hidden>
+            <h2 id="traceshare-heading" class="view-title">Anonymized Trace Export</h2>
+            <p class="view-desc">Detect PII (emails, IPs, API keys, file paths) and export a redacted copy safe for public sharing.</p>
+            <div id="traceshare-container" role="region" aria-label="Trace anonymizer"></div>
+        </section>
+
     </main>
 
     <!-- ===== FOOTER ===== -->
     <footer class="app-footer" role="contentinfo">
-        <p>Clawtrace v1.1.0 &mdash; 100% client-side &middot; zero tracking &middot; open source (MIT)</p>
+        <p>Clawtrace v2.0.0 &mdash; 100% client-side &middot; zero tracking &middot; open source (MIT)</p>
         <p class="footer-sub">Built for <a href="https://openclaw.ai/" target="_blank" rel="noopener">OpenClaw</a> 🦞 agents &amp; any AI system.</p>
         <p class="footer-sub" style="opacity:0.6;font-size:0.7rem;">Independent community project · Not affiliated with the OpenClaw team</p>
     </footer>
@@ -322,6 +469,25 @@
     <script src="src/js/costcalc.js" defer></script>
     <script src="src/js/bugreport.js" defer></script>
     <script src="src/js/flowgraph.js" defer></script>
+    <script src="src/js/session.js" defer></script>
+    <script src="src/js/toolprofiler.js" defer></script>
+    <script src="src/js/agentmap.js" defer></script>
+    <script src="src/js/channeldiff.js" defer></script>
+    <script src="src/js/routing.js" defer></script>
+    <script src="src/js/chatcmd.js" defer></script>
+    <script src="src/js/skillgraph.js" defer></script>
+    <script src="src/js/canvasreplay.js" defer></script>
+    <script src="src/js/voiceview.js" defer></script>
+    <script src="src/js/browserreplay.js" defer></script>
+    <script src="src/js/nodeactivity.js" defer></script>
+    <script src="src/js/crontimeline.js" defer></script>
+    <script src="src/js/injscan.js" defer></script>
+    <script src="src/js/sandbox.js" defer></script>
+    <script src="src/js/benchmark.js" defer></script>
+    <script src="src/js/failover.js" defer></script>
+    <script src="src/js/configrec.js" defer></script>
+    <script src="src/js/traceissue.js" defer></script>
+    <script src="src/js/traceshare.js" defer></script>
     <script src="src/js/app.js" defer></script>
 </body>
 </html>
