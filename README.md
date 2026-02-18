@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/clawtrace-logo.png" alt="Clawtrace Logo" width="600">
+<img src="assets/logo.png" alt="Clawtrace Logo" width="420">
 
 <br><br>
 

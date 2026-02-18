@@ -53,7 +53,7 @@ Clawtrace.App = (function () {
     var TS = Clawtrace.TraceShare;
 
     /* ---- State ---- */
-    var _currentView = 'input';
+    var _currentView = 'landing';
     var _rawInput = '';
     var _traceData = null;
     var _analysisResult = null;
@@ -97,16 +97,20 @@ Clawtrace.App = (function () {
         TS.init(dom.traceshareContainer);
         applyStoredTheme();
         checkShareURL();
-        setStatus('Ready — Load an AI interaction trace to begin.');
+        setStatus('Welcome to Clawtrace — your AI trace explorer.');
     }
 
     /**
      * Caches all DOM element references.
      */
     function cacheDOMReferences() {
-        dom.navButtons = document.querySelectorAll('.nav-btn');
+        dom.navButtons = document.querySelectorAll('.sidebar-btn');
         dom.views = document.querySelectorAll('.view');
         dom.statusMessage = document.getElementById('status-message');
+        dom.sidebar = document.querySelector('.sidebar');
+        dom.btnSidebarToggle = document.getElementById('btn-sidebar-toggle');
+        dom.btnGetStarted = document.getElementById('btn-get-started');
+        dom.btnLoadExampleLanding = document.getElementById('btn-load-example-landing');
 
         // Input view
         dom.dropZone = document.getElementById('drop-zone');
@@ -188,9 +192,31 @@ Clawtrace.App = (function () {
      * Binds all event listeners.
      */
     function bindEventListeners() {
-        // Navigation
+        // Sidebar navigation
         for (var i = 0; i < dom.navButtons.length; i++) {
             dom.navButtons[i].addEventListener('click', handleNavClick);
+        }
+
+        // Landing page actions
+        if (dom.btnGetStarted) {
+            dom.btnGetStarted.addEventListener('click', function () {
+                switchView('input');
+            });
+        }
+        if (dom.btnLoadExampleLanding) {
+            dom.btnLoadExampleLanding.addEventListener('click', function () {
+                handleLoadExample();
+                handleParse();
+            });
+        }
+
+        // Sidebar toggle (mobile)
+        if (dom.btnSidebarToggle) {
+            dom.btnSidebarToggle.addEventListener('click', function () {
+                if (dom.sidebar) {
+                    dom.sidebar.classList.toggle('expanded');
+                }
+            });
         }
 
         // Drop zone
@@ -263,7 +289,7 @@ Clawtrace.App = (function () {
     function switchView(viewName) {
         _currentView = viewName;
 
-        // Update nav buttons
+        // Update sidebar buttons
         for (var i = 0; i < dom.navButtons.length; i++) {
             var btn = dom.navButtons[i];
             if (btn.getAttribute('data-view') === viewName) {
@@ -285,6 +311,11 @@ Clawtrace.App = (function () {
                 v.classList.remove('active');
                 v.hidden = true;
             }
+        }
+
+        // Collapse sidebar on mobile after selection
+        if (dom.sidebar && window.innerWidth <= 768) {
+            dom.sidebar.classList.remove('expanded');
         }
     }
 
