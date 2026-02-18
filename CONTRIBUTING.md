@@ -14,7 +14,7 @@ By participating in this project, you agree to abide by our [Code of Conduct](CO
 
 ### Reporting Bugs
 
-1. Check [existing issues](https://github.com/openclaw/clawtrace/issues) to avoid duplicates.
+1. Check [existing issues](https://github.com/DosukaSOL/clawtrace/issues) to avoid duplicates.
 2. Open a new issue with:
    - Clear title describing the bug
    - Steps to reproduce
@@ -170,8 +170,8 @@ Example: `feat: add timeline text search with highlighting`
 
 ## Getting Help
 
-- Open a [Discussion](https://github.com/openclaw/clawtrace/discussions) for questions
-- Open an [Issue](https://github.com/openclaw/clawtrace/issues) for bugs/features
+- Open a [Discussion](https://github.com/DosukaSOL/clawtrace/discussions) for questions
+- Open an [Issue](https://github.com/DosukaSOL/clawtrace/issues) for bugs/features
 - See [SECURITY.md](SECURITY.md) for security reports
 
 ---

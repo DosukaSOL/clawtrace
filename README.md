@@ -18,7 +18,7 @@
 
 *A free, open-source, zero-dependency web tool that lets you load, explore, replay, analyze, and understand AI interaction traces — entirely in your browser, with absolute privacy.*
 
-**Part of the [OpenClaw](https://github.com/DosukaSOL) ecosystem.**
+**Built for [OpenClaw](https://github.com/openclaw/openclaw) agents and any AI system.**
 
 [**Get Started**](#-quick-start) · [**What's New in v1.1**](#-whats-new-in-v11) · [**Features**](#-features) · [**Security**](#-security-philosophy) · [**How to Use**](#-how-to-use) · [**Roadmap**](#-roadmap)
 
@@ -87,16 +87,24 @@ Drop in a trace file and Clawtrace does the rest:
 
 ---
 
-## 🌐 The OpenClaw Ecosystem
+## 🦞 Built for OpenClaw
 
-Clawtrace is part of **OpenClaw** — a growing collection of open-source tools for AI transparency, debugging, and safety. We believe AI tools should be:
+[**OpenClaw**](https://openclaw.ai/) is the open-source personal AI assistant with 207k+ GitHub stars, created by [Peter Steinberger](https://steipete.me/) and an incredible community. It runs on your own devices and connects to WhatsApp, Telegram, Slack, Discord, Signal, iMessage, Microsoft Teams, and more — all through a local Gateway control plane.
 
-- **Open** — fully auditable, no black boxes
-- **Private** — your data stays yours
-- **Free** — no paywalls, no "premium" tiers
-- **Secure** — security-first by design
+OpenClaw agents use models like Claude Opus 4, GPT-4o, and others to execute complex multi-step tasks: browsing the web, running shell commands, managing files, sending messages, and orchestrating sub-agents. These interactions generate rich traces — and that's where Clawtrace comes in.
 
-Clawtrace is the first tool in this ecosystem. More are coming.
+**Clawtrace is the trace explorer for OpenClaw agents.** It helps you:
+
+- **Debug agent loops** — OpenClaw's Pi agent runtime runs multi-step agent loops. Clawtrace replays them step by step.
+- **Inspect tool calls** — See every `browser`, `bash`, `canvas`, `cron`, and skill execution in the chain.
+- **Analyze reasoning quality** — Catch hallucinations, contradictions, and uncertainty in your agent's responses.
+- **Compare sessions** — Side-by-side diff two OpenClaw sessions to see what changed.
+- **Estimate costs** — Track token spending across models your OpenClaw is using.
+- **Generate bug reports** — One-click reports from agent traces, ready for GitHub Issues.
+
+Clawtrace also works with any AI system — OpenAI, Anthropic, LangChain, custom agents — but it's designed with the OpenClaw workflow in mind.
+
+> **Links:** [OpenClaw Website](https://openclaw.ai/) · [OpenClaw GitHub](https://github.com/openclaw/openclaw) · [OpenClaw Docs](https://docs.openclaw.ai/) · [OpenClaw Discord](https://discord.gg/clawd) · [@openclaw on X](https://x.com/openclaw)
 
 ---
 
@@ -128,6 +136,7 @@ An interactive SVG node graph showing the AI's decision chain. Left-to-right lay
 
 | Role | Use Case |
 |------|----------|
+| **OpenClaw Users** | Debug your assistant's agent loops, inspect skill executions, replay multi-channel sessions, catch when Molty gets stuck |
 | **AI Engineers** | Debug agent loops, inspect tool call sequences, catch infinite recursion |
 | **Prompt Engineers** | Analyze how prompt changes affect reasoning quality and confidence |
 | **QA Teams** | Review AI traces for production incidents and regressions |
@@ -259,6 +268,7 @@ Displayed as:
 
 ```bash
 git clone https://github.com/DosukaSOL/clawtrace.git
+# Clawtrace repo is hosted under DosukaSOL
 cd clawtrace
 open index.html    # macOS
 # or
@@ -347,8 +357,10 @@ Also supports:
 - `{ "steps": [...] }`
 - `{ "trace": [...] }`
 - `{ "events": [...] }`
-- Messages with `tool_calls` arrays
+- Messages with `tool_calls` arrays (OpenAI, OpenClaw)
 - Multi-part content arrays
+- OpenClaw agent traces with `bash`, `browser`, `write`, `cron.create`, and other tool calls
+- OpenClaw `sessions_send` / `sessions_list` / `sessions_history` traces
 
 ### YAML-like (Auto-detected)
 
@@ -456,7 +468,8 @@ clawtrace/
 │   └── AUDIT.md            # Security audit report
 ├── examples/
 │   ├── basic-chat.json     # Simple conversation trace
-│   └── agent-loop.json     # Multi-step agent with tool calls
+│   ├── agent-loop.json     # Multi-step agent with tool calls
+│   └── openclaw-agent.json # OpenClaw agent trace (calendar, skills, cron)
 ├── README.md               # This file
 ├── SECURITY.md             # Security policy & threat model
 ├── CONTRIBUTING.md         # Contribution guidelines
@@ -539,6 +552,9 @@ A: No. Never. The CSP meta tag enforces `connect-src 'none'`, which blocks all n
 **Q: Can I use this with any AI provider?**
 A: Yes. Clawtrace accepts any JSON message array, YAML-like key-value data, or plain text conversation. It auto-detects the format.
 
+**Q: How do I use this with OpenClaw?**
+A: Export your OpenClaw agent session history (via `sessions_history` or the Gateway logs), paste or drop the JSON into Clawtrace, and click Parse & Analyze. Clawtrace understands OpenClaw's tool call format — `bash`, `browser`, `write`, `cron.create`, skill executions, and multi-agent `sessions_send` traces all render correctly. There's also a built-in example at `examples/openclaw-agent.json`.
+
 **Q: Is the share URL secure?**
 A: The data is base64-encoded (not encrypted) and placed in the URL fragment. Browsers do not send fragments to servers. However, the URL is readable by anyone who has it. Do not share URLs containing sensitive data.
 
@@ -564,6 +580,6 @@ A: Yes. MIT licensed. Copy the files, serve them. No attribution required (but a
 
 [Get Started](#-quick-start) · [Report a Bug](https://github.com/DosukaSOL/clawtrace/issues) · [Request a Feature](https://github.com/DosukaSOL/clawtrace/issues)
 
-MIT License · Made with &#x2756; by [OpenClaw](https://github.com/DosukaSOL)
+MIT License · Made with &#x2756; by [DosukaSOL](https://github.com/DosukaSOL) · Built for [OpenClaw](https://openclaw.ai/) 🦞
 
 </div>

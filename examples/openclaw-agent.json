@@ -1,0 +1,90 @@
+[
+  {
+    "role": "system",
+    "content": "You are Molty, a personal AI assistant running on OpenClaw. You have access to tools: bash, browser, read, write, edit, sessions_send, sessions_list, cron.create. You are connected via Telegram. The user's workspace is ~/.openclaw/workspace."
+  },
+  {
+    "role": "user",
+    "content": "Hey Molty, can you check my calendar for today and then send me a summary of what I have coming up? Also set up a daily morning briefing at 8am."
+  },
+  {
+    "role": "assistant",
+    "content": "I'll check your calendar, summarize today's events, and set up a daily briefing. Let me start by looking at your calendar.",
+    "tool_calls": [
+      {
+        "function": {
+          "name": "bash",
+          "arguments": "{\"command\": \"gcalcli agenda --nocolor --details=all $(date +%Y-%m-%d) $(date -d '+1 day' +%Y-%m-%d 2>/dev/null || date -v+1d +%Y-%m-%d) 2>&1\"}"
+        }
+      }
+    ]
+  },
+  {
+    "role": "tool",
+    "name": "bash",
+    "content": "Tue Feb 18  09:00  Team standup (Google Meet)\n                  https://meet.google.com/abc-defg-hij\nTue Feb 18  11:30  1:1 with Sarah - Q1 planning\n                  Office - Room 4B\nTue Feb 18  14:00  Design review: new dashboard\n                  Figma link in calendar notes\nTue Feb 18  16:30  Dentist appointment\n                  Dr. Martinez, 123 Main St"
+  },
+  {
+    "role": "assistant",
+    "content": "Got your calendar. Here's your day:\n\n📅 **Today — Tuesday, Feb 18**\n\n| Time | Event | Location |\n|------|-------|----------|\n| 9:00 AM | Team standup | Google Meet |\n| 11:30 AM | 1:1 with Sarah — Q1 planning | Office Room 4B |\n| 2:00 PM | Design review: new dashboard | Figma |\n| 4:30 PM | Dentist appointment | Dr. Martinez, 123 Main St |\n\nYou've got a solid day — 3 work meetings and a dentist visit. The standup is in 45 minutes.\n\nNow let me set up your daily morning briefing.",
+    "tool_calls": [
+      {
+        "function": {
+          "name": "write",
+          "arguments": "{\"path\": \"/Users/lorenzo/.openclaw/workspace/skills/morning-briefing/SKILL.md\", \"content\": \"# Morning Briefing\\n\\nEvery morning, check the user's calendar for the day and send a friendly summary via the current channel.\\n\\n## Steps\\n1. Run `gcalcli agenda` for today\\n2. Check weather via `curl wttr.in/?format=3`\\n3. Summarize in a clean format with times, locations, and any prep notes\\n4. Send via the active channel\"}"
+        }
+      }
+    ]
+  },
+  {
+    "role": "tool",
+    "name": "write",
+    "content": "File written: /Users/lorenzo/.openclaw/workspace/skills/morning-briefing/SKILL.md (312 bytes)"
+  },
+  {
+    "role": "assistant",
+    "content": "Skill created. Now I'll set up the cron job to run it every morning at 8 AM.",
+    "tool_calls": [
+      {
+        "function": {
+          "name": "cron.create",
+          "arguments": "{\"name\": \"morning-briefing\", \"schedule\": \"0 8 * * *\", \"message\": \"Run the morning-briefing skill: check my calendar and weather, then send me a summary for today.\", \"channel\": \"telegram\"}"
+        }
+      }
+    ]
+  },
+  {
+    "role": "tool",
+    "name": "cron.create",
+    "content": "Cron job created: morning-briefing (0 8 * * *) → telegram. Next run: Wed Feb 19, 08:00."
+  },
+  {
+    "role": "assistant",
+    "content": "All set! Here's what I did:\n\n✅ **Calendar checked** — You have 4 events today (summary above)\n✅ **Morning briefing skill created** — Saved to your workspace skills\n✅ **Daily cron job scheduled** — Every day at 8:00 AM, I'll check your calendar and weather, then send you a briefing right here in Telegram\n\nTomorrow morning you'll get your first automated briefing. Want me to tweak the format or add anything else to it?"
+  },
+  {
+    "role": "user",
+    "content": "Nice! Can you also check if there are any open PRs on my project that need review?"
+  },
+  {
+    "role": "assistant",
+    "content": "Let me check your GitHub PRs.",
+    "tool_calls": [
+      {
+        "function": {
+          "name": "browser",
+          "arguments": "{\"action\": \"navigate\", \"url\": \"https://github.com/notifications?query=is%3Aopen+reason%3Areview-requested\"}"
+        }
+      }
+    ]
+  },
+  {
+    "role": "tool",
+    "name": "browser",
+    "content": "Page loaded: GitHub Notifications — Review Requested\n\nFound 3 open PRs requesting your review:\n1. feat: add webhook retry logic (#342) by @sarah-dev — opened 2 hours ago, 3 files changed\n2. fix: race condition in session cleanup (#338) by @marcos — opened yesterday, 1 file changed\n3. docs: update API reference for v2 (#335) by @alex-writes — opened 3 days ago, 12 files changed"
+  },
+  {
+    "role": "assistant",
+    "content": "You've got **3 PRs** waiting for your review:\n\n| PR | Author | Age | Size |\n|----|--------|-----|------|\n| **#342** feat: add webhook retry logic | @sarah-dev | 2 hours | 3 files |\n| **#338** fix: race condition in session cleanup | @marcos | 1 day | 1 file |\n| **#335** docs: update API reference for v2 | @alex-writes | 3 days | 12 files |\n\nThe race condition fix (#338) is small and probably quick to review. The docs PR (#335) has been waiting 3 days — might want to prioritize that one. Want me to open any of these in your browser?"
+  }
+]
