@@ -26,6 +26,12 @@ Clawtrace.App = (function () {
     var CMP = Clawtrace.Comparison;
     var EXP = Clawtrace.Export;
     var SHR = Clawtrace.Share;
+    var RPL = Clawtrace.Replay;
+    var HM = Clawtrace.Heatmap;
+    var RDR = Clawtrace.Radar;
+    var CC = Clawtrace.CostCalc;
+    var BR = Clawtrace.BugReport;
+    var FG = Clawtrace.FlowGraph;
 
     /* ---- State ---- */
     var _currentView = 'input';
@@ -45,6 +51,12 @@ Clawtrace.App = (function () {
         cacheDOMReferences();
         bindEventListeners();
         TL.init(dom.timelineContainer);
+        RPL.init(dom.replayContainer);
+        HM.init(dom.heatmapContainer);
+        RDR.init(dom.radarContainer);
+        CC.init(dom.costcalcContainer);
+        BR.init(dom.bugreportContainer);
+        FG.init(dom.flowgraphContainer);
         applyStoredTheme();
         checkShareURL();
         setStatus('Ready — Load an AI interaction trace to begin.');
@@ -103,6 +115,14 @@ Clawtrace.App = (function () {
 
         // Theme
         dom.btnThemeToggle = document.getElementById('btn-theme-toggle');
+
+        // New views
+        dom.replayContainer = document.getElementById('replay-container');
+        dom.heatmapContainer = document.getElementById('heatmap-container');
+        dom.radarContainer = document.getElementById('radar-container');
+        dom.costcalcContainer = document.getElementById('costcalc-container');
+        dom.bugreportContainer = document.getElementById('bugreport-container');
+        dom.flowgraphContainer = document.getElementById('flowgraph-container');
     }
 
     /**
@@ -322,6 +342,14 @@ Clawtrace.App = (function () {
 
                 // Render analyzer
                 renderAnalyzer(_analysisResult);
+
+                // Render new views
+                RPL.render(_traceData);
+                HM.render(_traceData, _analysisResult);
+                RDR.render(_traceData, _analysisResult);
+                CC.render(_traceData);
+                BR.render(_traceData, _analysisResult);
+                FG.render(_traceData);
 
                 // Enable export buttons
                 dom.btnExportJSON.disabled = false;
@@ -661,6 +689,14 @@ Clawtrace.App = (function () {
                 TL.init(dom.timelineContainer);
                 TL.render(_traceData);
                 renderAnalyzer(_analysisResult);
+
+                // Render new views
+                RPL.render(_traceData);
+                HM.render(_traceData, _analysisResult);
+                RDR.render(_traceData, _analysisResult);
+                CC.render(_traceData);
+                BR.render(_traceData, _analysisResult);
+                FG.render(_traceData);
 
                 dom.btnExportJSON.disabled = false;
                 dom.btnExportMd.disabled = false;

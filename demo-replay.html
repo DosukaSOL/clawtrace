@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clawtrace — Trace Replay Mode Preview</title>
+<style>
+/* ── Base ────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e17;--surface:#111827;--surface2:#1e293b;--border:#334155;
+  --text:#e2e8f0;--muted:#94a3b8;--accent:#38bdf8;--accent2:#818cf8;
+  --green:#22c55e;--red:#ef4444;--amber:#f59e0b;--purple:#a78bfa;
+  --radius:10px;--glow:0 0 20px rgba(56,189,248,.12);
+}
+body{background:var(--bg);color:var(--text);font-family:'SF Mono','Fira Code','Cascadia Code',monospace;line-height:1.6;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:32px 16px}
+a{color:var(--accent)}
+h1{font-size:1.6rem;margin-bottom:4px}
+.subtitle{color:var(--muted);font-size:.85rem;margin-bottom:24px}
+.badge{display:inline-block;background:var(--accent);color:var(--bg);font-weight:700;font-size:.6rem;padding:2px 8px;border-radius:100px;vertical-align:middle;margin-left:8px;letter-spacing:.5px}
+
+/* ── Wrapper ─────────────────────────────────────── */
+.demo-wrap{width:100%;max-width:820px}
+
+/* ── Progress ────────────────────────────────────── */
+.replay-progress-wrap{margin-bottom:16px}
+.replay-progress-bar{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;position:relative}
+.replay-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .3s ease}
+.replay-progress-text{display:block;text-align:right;font-size:.72rem;color:var(--muted);margin-top:4px}
+
+/* ── Controls ────────────────────────────────────── */
+.replay-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.btn{padding:6px 14px;font-size:.78rem;font-family:inherit;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:background .15s,border-color .15s}
+.btn:hover{background:var(--surface);border-color:var(--accent)}
+.btn-primary{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:700}
+.btn-primary:hover{background:#7dd3fc}
+.replay-play-btn{min-width:100px}
+.replay-speed-group{display:flex;align-items:center;gap:4px;margin-left:auto}
+.replay-speed-label{font-size:.72rem;color:var(--muted)}
+.replay-speed-btn{padding:4px 10px;font-size:.7rem}
+.replay-speed-btn.active{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+
+/* ── Stage ───────────────────────────────────────── */
+.replay-stage{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;min-height:300px;max-height:520px;overflow-y:auto;box-shadow:var(--glow);position:relative}
+.replay-empty{color:var(--muted);text-align:center;padding:60px 20px;font-size:.85rem}
+
+.replay-step{opacity:0;transform:translateY(12px);animation:stepIn .35s ease forwards;margin-bottom:16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;position:relative}
+@keyframes stepIn{to{opacity:1;transform:translateY(0)}}
+
+.replay-step-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.replay-pulse{width:10px;height:10px;border-radius:50%;flex-shrink:0;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+.replay-pulse-user{background:var(--accent)}
+.replay-pulse-assistant{background:var(--green)}
+.replay-pulse-tool_call{background:var(--amber)}
+.replay-pulse-error{background:var(--red)}
+.replay-pulse-system{background:var(--purple)}
+.replay-pulse-reasoning{background:var(--accent2)}
+
+.replay-step-num{font-size:.68rem;color:var(--muted);font-weight:600}
+.replay-step-badge{display:inline-block;padding:2px 8px;font-size:.62rem;font-weight:700;text-transform:uppercase;border-radius:4px;letter-spacing:.5px;color:#fff}
+.replay-badge-user{background:#0369a1}
+.replay-badge-assistant{background:#15803d}
+.replay-badge-tool_call{background:#b45309}
+.replay-badge-error{background:#dc2626}
+.replay-badge-system{background:#7c3aed}
+.replay-badge-reasoning{background:#4f46e5}
+
+.replay-step-content{font-size:.82rem;color:var(--text);white-space:pre-wrap;word-break:break-word;line-height:1.7}
+.replay-typing-cursor{display:inline-block;width:7px;height:1em;background:var(--accent);animation:blink .7s step-end infinite;vertical-align:text-bottom;margin-left:2px}
+@keyframes blink{50%{opacity:0}}
+
+.replay-step.error-flash{animation:stepIn .35s ease forwards,errorFlash .6s ease}
+@keyframes errorFlash{0%{box-shadow:0 0 0 0 rgba(239,68,68,.5)}50%{box-shadow:0 0 20px 4px rgba(239,68,68,.3)}100%{box-shadow:none}}
+
+.replay-counter{text-align:center;margin-top:12px;font-size:.72rem;color:var(--muted)}
+
+/* ── Footer ──────────────────────────────────────── */
+.demo-footer{text-align:center;margin-top:32px;font-size:.72rem;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="demo-wrap">
+  <h1>🎬 Trace Replay Mode <span class="badge">v1.1 PREVIEW</span></h1>
+  <p class="subtitle">Watch every AI step unfold in real-time — like a movie of your AI's brain.</p>
+
+  <!-- Progress -->
+  <div class="replay-progress-wrap">
+    <div class="replay-progress-bar"><div class="replay-progress-fill" id="progress-fill"></div></div>
+    <span class="replay-progress-text" id="progress-text">0 / 8 steps</span>
+  </div>
+
+  <!-- Controls -->
+  <div class="replay-controls">
+    <button class="btn" id="btn-restart">⏮ Restart</button>
+    <button class="btn" id="btn-back">⏪ Back</button>
+    <button class="btn btn-primary replay-play-btn" id="btn-play">▶ Play</button>
+    <button class="btn" id="btn-forward">Next ⏩</button>
+    <div class="replay-speed-group">
+      <span class="replay-speed-label">Speed:</span>
+      <button class="btn replay-speed-btn" data-speed="0.5">0.5×</button>
+      <button class="btn replay-speed-btn active" data-speed="1">1×</button>
+      <button class="btn replay-speed-btn" data-speed="2">2×</button>
+      <button class="btn replay-speed-btn" data-speed="4">4×</button>
+    </div>
+  </div>
+
+  <!-- Stage -->
+  <div class="replay-stage" id="stage">
+    <div class="replay-empty">Press <strong>Play</strong> to watch the AI trace unfold step by step.</div>
+  </div>
+  <div class="replay-counter" id="counter"></div>
+
+  <p class="demo-footer">Clawtrace Replay Demo — 100% local, zero dependencies, zero network calls.<br>This is a preview of what ships in <strong>Clawtrace v1.1</strong>.</p>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ── Sample Trace Data ──────────────────── */
+  var TRACE = [
+    { type: 'user', content: 'Can you help me find the top 3 most popular open-source AI frameworks and compare their GitHub stars, primary language, and license?' },
+    { type: 'reasoning', content: 'The user wants a comparison of top open-source AI frameworks. I should consider: TensorFlow, PyTorch, Hugging Face Transformers, LangChain, scikit-learn. Let me check my knowledge for current GitHub star counts and metadata. I\'ll focus on the most relevant ones as of early 2025.' },
+    { type: 'tool_call', content: 'search_github_repos(query="AI machine learning framework", sort="stars", limit=10)\n→ Results: pytorch/pytorch (82k★), tensorflow/tensorflow (186k★), huggingface/transformers (136k★), scikit-learn/scikit-learn (60k★), langchain-ai/langchain (98k★)' },
+    { type: 'reasoning', content: 'Got the results. Top 3 by stars: TensorFlow (186k), Hugging Face Transformers (136k), LangChain (98k). Wait — I should double-check. Actually, PyTorch might be higher now... Let me reconsider. The user asked for "most popular" which I\'ll interpret as highest GitHub stars. Going with TensorFlow, Transformers, and LangChain.' },
+    { type: 'assistant', content: 'Here are the top 3 most popular open-source AI frameworks by GitHub stars:\n\n| Framework | GitHub Stars | Primary Language | License |\n|-----------|-------------|-----------------|----------|\n| TensorFlow | ~186k ★ | Python / C++ | Apache 2.0 |\n| Hugging Face Transformers | ~136k ★ | Python | Apache 2.0 |\n| LangChain | ~98k ★ | Python / TypeScript | MIT |\n\n**Key takeaways:**\n- TensorFlow remains the most starred, largely due to its long history and Google backing.\n- Hugging Face Transformers has surged thanks to the LLM boom.\n- LangChain is the newest entrant, growing rapidly in the AI agent ecosystem.' },
+    { type: 'user', content: 'Interesting! Now can you check if any of them have had a major security vulnerability in the last year? And which one has the most active contributor community?' },
+    { type: 'tool_call', content: 'search_cve_database(software=["tensorflow","transformers","langchain"], date_range="2024-2025")\n→ TensorFlow: CVE-2024-3660 (critical, TFLite model parsing), patched in 2.16.1\n→ Transformers: No critical CVEs found\n→ LangChain: CVE-2024-46946 (high, prompt injection in SQL chain), patched in 0.2.12\n\nget_contributor_stats(repos=["tensorflow/tensorflow","huggingface/transformers","langchain-ai/langchain"])\n→ TensorFlow: 3,400+ contributors, 89 commits/week\n→ Transformers: 2,800+ contributors, 142 commits/week\n→ LangChain: 3,100+ contributors, 203 commits/week' },
+    { type: 'assistant', content: '**Security vulnerabilities (last year):**\n\n⚠️ **TensorFlow** — CVE-2024-3660 (Critical): A model parsing vulnerability in TensorFlow Lite that could allow arbitrary code execution. Patched in v2.16.1.\n\n✅ **Hugging Face Transformers** — No critical CVEs reported in the past year.\n\n⚠️ **LangChain** — CVE-2024-46946 (High): A prompt injection vulnerability in the SQL database chain that could lead to data exfiltration. Patched in v0.2.12.\n\n**Most active community:**\nLangChain leads with ~203 commits/week and 3,100+ contributors, followed by Transformers at 142 commits/week. Despite being the newest, LangChain\'s rapid pace reflects the current AI agent development boom.' }
+  ];
+
+  /* ── State ──────────────────────────────── */
+  var currentStep = -1;
+  var playing = false;
+  var timer = null;
+  var typingTimer = null;
+  var speed = 1;
+  var speedMap = { 0.5: 3000, 1: 1500, 2: 750, 4: 350 };
+
+  /* ── DOM refs ───────────────────────────── */
+  var stage = document.getElementById('stage');
+  var progressFill = document.getElementById('progress-fill');
+  var progressText = document.getElementById('progress-text');
+  var counter = document.getElementById('counter');
+  var btnPlay = document.getElementById('btn-play');
+  var btnRestart = document.getElementById('btn-restart');
+  var btnBack = document.getElementById('btn-back');
+  var btnForward = document.getElementById('btn-forward');
+  var speedBtns = document.querySelectorAll('.replay-speed-btn');
+
+  /* ── Helpers ────────────────────────────── */
+  function escapeHTML(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function updateProgress() {
+    var pct = TRACE.length > 0 ? ((currentStep + 1) / TRACE.length) * 100 : 0;
+    progressFill.style.width = pct + '%';
+    progressText.textContent = (currentStep + 1) + ' / ' + TRACE.length + ' steps';
+    counter.textContent = currentStep >= 0 ? 'Step ' + (currentStep + 1) + ' of ' + TRACE.length : '';
+  }
+
+  /* ── Render one step ────────────────────── */
+  function renderStep(index) {
+    var step = TRACE[index];
+    var stepEl = document.createElement('div');
+    stepEl.className = 'replay-step' + (step.type === 'error' ? ' error-flash' : '');
+
+    var header = document.createElement('div');
+    header.className = 'replay-step-header';
+
+    var pulse = document.createElement('div');
+    pulse.className = 'replay-pulse replay-pulse-' + step.type;
+
+    var num = document.createElement('span');
+    num.className = 'replay-step-num';
+    num.textContent = '#' + (index + 1);
+
+    var badge = document.createElement('span');
+    badge.className = 'replay-step-badge replay-badge-' + step.type;
+    badge.textContent = step.type.toUpperCase();
+
+    header.appendChild(pulse);
+    header.appendChild(num);
+    header.appendChild(badge);
+    stepEl.appendChild(header);
+
+    var content = document.createElement('div');
+    content.className = 'replay-step-content';
+    stepEl.appendChild(content);
+
+    // Clear empty message on first step
+    if (index === 0) { stage.innerHTML = ''; }
+    stage.appendChild(stepEl);
+
+    // Typing animation
+    typeContent(content, step.content);
+
+    // Scroll to bottom
+    stage.scrollTop = stage.scrollHeight;
+  }
+
+  function typeContent(el, text) {
+    if (typingTimer) { clearInterval(typingTimer); typingTimer = null; }
+    var pos = 0;
+    var cursor = document.createElement('span');
+    cursor.className = 'replay-typing-cursor';
+    el.textContent = '';
+    el.appendChild(cursor);
+
+    var charsPerTick = Math.max(1, Math.ceil(text.length / 60));
+    var interval = speedMap[speed] < 1000 ? 15 : 25;
+
+    typingTimer = setInterval(function() {
+      var chunk = text.substring(0, pos + charsPerTick);
+      pos += charsPerTick;
+      el.textContent = chunk;
+
+      if (pos < text.length) {
+        el.appendChild(cursor);
+      } else {
+        clearInterval(typingTimer);
+        typingTimer = null;
+      }
+      stage.scrollTop = stage.scrollHeight;
+    }, interval);
+  }
+
+  /* ── Playback controls ─────────────────── */
+  function play() {
+    if (playing) return;
+    playing = true;
+    btnPlay.textContent = '⏸ Pause';
+    advance();
+  }
+
+  function pause() {
+    playing = false;
+    btnPlay.textContent = '▶ Play';
+    if (timer) { clearTimeout(timer); timer = null; }
+  }
+
+  function advance() {
+    if (!playing) return;
+    if (currentStep >= TRACE.length - 1) { pause(); return; }
+    currentStep++;
+    renderStep(currentStep);
+    updateProgress();
+    timer = setTimeout(advance, speedMap[speed]);
+  }
+
+  function restart() {
+    pause();
+    if (typingTimer) { clearInterval(typingTimer); typingTimer = null; }
+    currentStep = -1;
+    stage.innerHTML = '<div class="replay-empty">Press <strong>Play</strong> to watch the AI trace unfold step by step.</div>';
+    updateProgress();
+  }
+
+  function stepForward() {
+    if (currentStep >= TRACE.length - 1) return;
+    if (playing) pause();
+    currentStep++;
+    renderStep(currentStep);
+    updateProgress();
+  }
+
+  function stepBack() {
+    if (currentStep <= 0) { restart(); return; }
+    if (playing) pause();
+    if (typingTimer) { clearInterval(typingTimer); typingTimer = null; }
+    currentStep--;
+    // Re-render all steps up to current
+    stage.innerHTML = '';
+    for (var i = 0; i <= currentStep; i++) {
+      var step = TRACE[i];
+      var stepEl = document.createElement('div');
+      stepEl.className = 'replay-step';
+      stepEl.style.animation = 'none';
+      stepEl.style.opacity = '1';
+      stepEl.style.transform = 'none';
+
+      var header = document.createElement('div');
+      header.className = 'replay-step-header';
+      var pulse = document.createElement('div');
+      pulse.className = 'replay-pulse replay-pulse-' + step.type;
+      var numEl = document.createElement('span');
+      numEl.className = 'replay-step-num';
+      numEl.textContent = '#' + (i + 1);
+      var badgeEl = document.createElement('span');
+      badgeEl.className = 'replay-step-badge replay-badge-' + step.type;
+      badgeEl.textContent = step.type.toUpperCase();
+      header.appendChild(pulse);
+      header.appendChild(numEl);
+      header.appendChild(badgeEl);
+      stepEl.appendChild(header);
+
+      var content = document.createElement('div');
+      content.className = 'replay-step-content';
+      content.textContent = step.content;
+      stepEl.appendChild(content);
+      stage.appendChild(stepEl);
+    }
+    stage.scrollTop = stage.scrollHeight;
+    updateProgress();
+  }
+
+  /* ── Event listeners ────────────────────── */
+  btnPlay.addEventListener('click', function() { playing ? pause() : play(); });
+  btnRestart.addEventListener('click', restart);
+  btnBack.addEventListener('click', stepBack);
+  btnForward.addEventListener('click', stepForward);
+
+  for (var i = 0; i < speedBtns.length; i++) {
+    speedBtns[i].addEventListener('click', function(e) {
+      speed = parseFloat(e.currentTarget.getAttribute('data-speed'));
+      for (var j = 0; j < speedBtns.length; j++) {
+        speedBtns[j].classList.remove('active');
+      }
+      e.currentTarget.classList.add('active');
+    });
+  }
+
+  /* ── Keyboard shortcuts ─────────────────── */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === ' ' || e.key === 'k') { e.preventDefault(); playing ? pause() : play(); }
+    if (e.key === 'ArrowRight' || e.key === 'l') { stepForward(); }
+    if (e.key === 'ArrowLeft' || e.key === 'j') { stepBack(); }
+    if (e.key === 'r') { restart(); }
+  });
+
+  updateProgress();
+})();
+</script>
+</body>
+</html>

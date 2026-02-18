@@ -55,6 +55,24 @@
                 <button class="nav-btn" data-view="export">
                     <span class="nav-icon" aria-hidden="true">&#8615;</span> Export
                 </button>
+                <button class="nav-btn" data-view="replay">
+                    <span class="nav-icon" aria-hidden="true">&#9654;</span> Replay
+                </button>
+                <button class="nav-btn" data-view="heatmap">
+                    <span class="nav-icon" aria-hidden="true">&#9608;</span> Heatmap
+                </button>
+                <button class="nav-btn" data-view="radar">
+                    <span class="nav-icon" aria-hidden="true">&#9678;</span> Radar
+                </button>
+                <button class="nav-btn" data-view="costcalc">
+                    <span class="nav-icon" aria-hidden="true">&#36;</span> Cost
+                </button>
+                <button class="nav-btn" data-view="bugreport">
+                    <span class="nav-icon" aria-hidden="true">&#128196;</span> Bug Report
+                </button>
+                <button class="nav-btn" data-view="flowgraph">
+                    <span class="nav-icon" aria-hidden="true">&#9670;</span> Flow
+                </button>
             </nav>
             <div class="header-actions">
                 <button id="btn-theme-toggle" class="icon-btn" aria-label="Toggle light/dark theme" title="Toggle theme">
@@ -239,11 +257,53 @@
             </div>
         </section>
 
+        <!-- ===== REPLAY VIEW ===== -->
+        <section id="view-replay" class="view" aria-labelledby="replay-heading" hidden>
+            <h2 id="replay-heading" class="view-title">Trace Replay</h2>
+            <p class="view-desc">Watch the AI trace unfold step by step with animated playback. Play, pause, adjust speed, and step through manually.</p>
+            <div id="replay-container" role="region" aria-label="Trace replay"></div>
+        </section>
+
+        <!-- ===== HEATMAP VIEW ===== -->
+        <section id="view-heatmap" class="view" aria-labelledby="heatmap-heading" hidden>
+            <h2 id="heatmap-heading" class="view-title">Hallucination Heatmap</h2>
+            <p class="view-desc">Visual X-ray of AI reliability. Every phrase that triggers hallucination, uncertainty, or contradiction signals is highlighted by severity.</p>
+            <div id="heatmap-container" role="region" aria-label="Hallucination heatmap"></div>
+        </section>
+
+        <!-- ===== RADAR VIEW ===== -->
+        <section id="view-radar" class="view" aria-labelledby="radar-heading" hidden>
+            <h2 id="radar-heading" class="view-title">AI Behavior Radar</h2>
+            <p class="view-desc">Behavioral fingerprint across 6 dimensions: Verbosity, Confidence, Tool Reliance, Repetitiveness, Hedging, and Error Rate.</p>
+            <div id="radar-container" role="region" aria-label="Behavior radar chart"></div>
+        </section>
+
+        <!-- ===== COST CALCULATOR VIEW ===== -->
+        <section id="view-costcalc" class="view" aria-labelledby="costcalc-heading" hidden>
+            <h2 id="costcalc-heading" class="view-title">Token Cost Calculator</h2>
+            <p class="view-desc">Estimate what this trace would cost across 20+ major AI models. Auto-detects model from metadata when available.</p>
+            <div id="costcalc-container" role="region" aria-label="Token cost calculator"></div>
+        </section>
+
+        <!-- ===== BUG REPORT VIEW ===== -->
+        <section id="view-bugreport" class="view" aria-labelledby="bugreport-heading" hidden>
+            <h2 id="bugreport-heading" class="view-title">Bug Report Generator</h2>
+            <p class="view-desc">Generate a formatted bug report from your trace analysis. One click, copy to clipboard, paste into GitHub Issues or Jira.</p>
+            <div id="bugreport-container" role="region" aria-label="Bug report generator"></div>
+        </section>
+
+        <!-- ===== FLOW GRAPH VIEW ===== -->
+        <section id="view-flowgraph" class="view" aria-labelledby="flowgraph-heading" hidden>
+            <h2 id="flowgraph-heading" class="view-title">Reasoning Flow Graph</h2>
+            <p class="view-desc">Interactive node graph of the AI&apos;s decision chain. Tool calls branch, errors are dead ends, loops are visible as cycles. Zoom and pan to explore.</p>
+            <div id="flowgraph-container" role="region" aria-label="Reasoning flow graph"></div>
+        </section>
+
     </main>
 
     <!-- ===== FOOTER ===== -->
     <footer class="app-footer" role="contentinfo">
-        <p>Clawtrace v1.0.0 &mdash; 100% client-side &middot; zero tracking &middot; open source (MIT)</p>
+        <p>Clawtrace v1.1.0 &mdash; 100% client-side &middot; zero tracking &middot; open source (MIT)</p>
         <p class="footer-sub">Part of the <strong>OpenClaw</strong> ecosystem.</p>
     </footer>
 
@@ -255,6 +315,12 @@
     <script src="src/js/comparison.js" defer></script>
     <script src="src/js/export.js" defer></script>
     <script src="src/js/share.js" defer></script>
+    <script src="src/js/replay.js" defer></script>
+    <script src="src/js/heatmap.js" defer></script>
+    <script src="src/js/radar.js" defer></script>
+    <script src="src/js/costcalc.js" defer></script>
+    <script src="src/js/bugreport.js" defer></script>
+    <script src="src/js/flowgraph.js" defer></script>
     <script src="src/js/app.js" defer></script>
 </body>
 </html>

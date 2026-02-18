@@ -111,7 +111,8 @@ Clawtrace.Sanitizer = (function () {
             'aria-current', 'aria-hidden', 'aria-live', 'aria-valuenow',
             'aria-valuemin', 'aria-valuemax',
             'title', 'tabindex', 'data-type', 'data-index', 'data-slot',
-            'data-step', 'data-view', 'type', 'readonly', 'disabled',
+            'data-step', 'data-view', 'data-speed', 'data-format',
+            'type', 'readonly', 'disabled',
             'for', 'name', 'value', 'rows', 'maxlength',
             'style'
         ];
@@ -246,6 +247,8 @@ Clawtrace.Sanitizer = (function () {
             var keyLen = Math.min(keys.length, maxKeys);
             for (var k = 0; k < keyLen; k++) {
                 var key = sanitizeString(keys[k], 200);
+                // Block prototype pollution vectors
+                if (key === '__proto__' || key === 'constructor' || key === 'prototype') { continue; }
                 result[key] = sanitizeObject(obj[keys[k]], depth + 1);
             }
             return result;

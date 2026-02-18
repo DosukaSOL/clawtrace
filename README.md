@@ -6,7 +6,7 @@
 
 ### AI Interaction & Reasoning Explorer
 
-**See what your AI is *really* doing.**
+**See what your AI is *really* doing — now with Trace Replay, Hallucination Heatmaps, and more.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -16,11 +16,11 @@
 
 ---
 
-*A free, open-source, zero-dependency web tool that lets you load, explore, analyze, and understand AI interaction traces — entirely in your browser, with absolute privacy.*
+*A free, open-source, zero-dependency web tool that lets you load, explore, replay, analyze, and understand AI interaction traces — entirely in your browser, with absolute privacy.*
 
 **Part of the [OpenClaw](https://github.com/DosukaSOL) ecosystem.**
 
-[**Get Started**](#-quick-start) · [**Features**](#-features) · [**Security**](#-security-philosophy) · [**How to Use**](#-how-to-use) · [**Roadmap**](#-roadmap)
+[**Get Started**](#-quick-start) · [**What's New in v1.1**](#-whats-new-in-v11) · [**Features**](#-features) · [**Security**](#-security-philosophy) · [**How to Use**](#-how-to-use) · [**Roadmap**](#-roadmap)
 
 </div>
 
@@ -32,8 +32,14 @@
 
 You feed it the raw logs from any AI system — OpenAI, Anthropic, local agents, custom tool chains — and it instantly gives you:
 
+- A **cinematic trace replay** that plays back every AI step like a movie
 - A **color-coded timeline** of every step the AI took
+- A **hallucination heatmap** that highlights uncertainty word-by-word
+- A **behavior radar chart** profiling the AI's personality
 - A **reasoning analyzer** that catches loops, hallucinations, contradictions, and uncertainty
+- A **token cost calculator** comparing 20+ models side-by-side
+- A **one-click bug report generator** for GitHub Issues and Jira
+- An **interactive reasoning flow graph** showing the AI's decision chain
 - A **risk score** and **confidence score** at a glance
 - **Side-by-side comparison** of two different traces
 - **Exports** to Markdown, JSON, and printable HTML
@@ -65,8 +71,14 @@ Drop in a trace file and Clawtrace does the rest:
 
 | What You Get | How It Helps |
 |-------------|-------------|
+| � **Trace Replay Mode** | Watch every AI step unfold in real-time with typing animations, speed control, and play/pause — like a movie of your AI's brain |
 | 🎯 **Interactive Timeline** | See every step — user, assistant, tool call, error — with color coding and expand/collapse |
+| 🔥 **Hallucination Heatmap** | Word-level severity highlighting of uncertainty, contradictions, and hallucination patterns |
+| 🕸️ **AI Behavior Radar** | Spider chart profiling 6 behavioral dimensions: verbosity, confidence, tool reliance, repetitiveness, hedging, error rate |
 | 🔍 **Reasoning Analyzer** | Auto-detects loops, repetition, hallucination markers, contradictions, uncertainty |
+| 💰 **Token Cost Calculator** | Estimate costs across 20 major models (GPT-4o, Claude Opus 4, Gemini, Llama, etc.) with auto-detection |
+| 📋 **Bug Report Generator** | One-click formatted reports for GitHub Issues, Jira, or plain text — ready to paste |
+| 🌊 **Reasoning Flow Graph** | Interactive SVG node graph of the AI's decision chain with zoom, pan, and loop detection |
 | 📊 **Risk & Confidence Scores** | Instant 0–100 assessment of trace quality |
 | ⚠️ **Warning Flags** | Critical/Error/Warning/Info severity levels with evidence |
 | 🔄 **Comparison Mode** | Side-by-side diff of two traces with change highlighting |
@@ -85,6 +97,30 @@ Clawtrace is part of **OpenClaw** — a growing collection of open-source tools 
 - **Secure** — security-first by design
 
 Clawtrace is the first tool in this ecosystem. More are coming.
+
+---
+
+## 🆕 What's New in v1.1
+
+**Clawtrace v1.1** ships 6 major new features designed for virality, debuggability, and AI transparency:
+
+### 🎬 Trace Replay Mode — *The Wow Feature*
+Watch your AI trace play back in real-time. Every step appears with a typing animation, color-coded pulses, and auto-scrolling — like watching the AI think. Use play/pause, step forward/back, and speed controls (0.5x–4x).
+
+### 🔥 Hallucination Heatmap
+Every word in the trace is scanned against 13 hallucination/uncertainty patterns across 4 severity levels. The result: a color-coded heatmap that lights up contradictions, hedging, self-corrections, and confidence-gaps at a glance.
+
+### 🕸️ AI Behavior Radar Chart
+An SVG spider chart profiling 6 behavioral dimensions — Verbosity, Confidence, Tool Reliance, Repetitiveness, Hedging, and Error Rate. See the AI's "personality fingerprint" for any trace.
+
+### 💰 Token Cost Calculator
+Estimates input/output/total token costs across 20 major models — GPT-4o, Claude Opus 4, Gemini 2.0, Llama 3.1, Mistral, DeepSeek, and more. Auto-detects which model was used and highlights it.
+
+### 📋 One-Click Bug Report Generator
+Generates a formatted bug report from the trace analysis — ready to paste into GitHub Issues (Markdown), Jira (markup), or plain text. Includes summary, errors, warnings, tool calls, and a trace snippet.
+
+### 🌊 Reasoning Flow Graph
+An interactive SVG node graph showing the AI's decision chain. Left-to-right layout with zoom, pan, mouse wheel support, color-coded nodes, loop detection (dashed red edges), and up to 100 visible nodes.
 
 ---
 
@@ -154,6 +190,57 @@ Displayed as:
 - No server, no storage — data is embedded in the URL
 - Automatic detection and loading of shared URLs
 - Size-aware truncation with warnings
+
+### 🎬 Trace Replay Mode
+- Animated step-by-step playback of the entire trace
+- Play, pause, restart, step forward, step back controls
+- Speed control: 0.5x, 1x, 2x, 4x
+- Typing animation for step content
+- Color-coded pulse indicators per step type
+- Progress bar and step counter
+- Auto-scroll to keep the current step in view
+- Accessible: ARIA live region, keyboard navigation
+
+### 🔥 Hallucination Heatmap
+- Word-level severity highlighting: Critical, High, Medium, Low
+- 13 regex patterns detecting hallucination, uncertainty, contradiction, hedging
+- Automatic overlap resolution (highest severity wins)
+- Summary cards with total counts per severity level
+- Per-step breakdown with highlighted content
+- Color legend for quick reference
+
+### 🕸️ AI Behavior Radar Chart
+- SVG spider chart with 6 axes: Verbosity, Confidence, Tool Reliance, Repetitiveness, Hedging, Error Rate
+- Background rings at 25%, 50%, 75%, 100%
+- Filled polygon data shape with interactive dots
+- Detailed score cards with horizontal bar fills
+- Score descriptions explaining each dimension
+
+### 💰 Token Cost Calculator
+- Token estimation (~4 chars per token) for input and output
+- 20 models across 7 providers: OpenAI, Anthropic, Google, Meta, Mistral, DeepSeek, OpenAI (o-series)
+- Auto-detection of model used in trace
+- Summary cards: total tokens, cheapest model, most expensive
+- Sortable comparison table with cost breakdown
+- Callout cards for cheapest and priciest options
+
+### 📋 Bug Report Generator
+- One-click generation in 3 formats: GitHub Issue (Markdown), Jira (markup), Plain Text
+- Includes: summary table, error list, critical warnings, tool calls, trace snippet
+- Copy-to-clipboard with visual feedback
+- Environment info auto-populated
+- Format switching with live preview
+
+### 🌊 Reasoning Flow Graph
+- Interactive SVG node graph of AI decision flow
+- Left-to-right layout with branching for tool calls
+- Loop detection via content similarity (dashed red edges)
+- Zoom in/out/reset controls + mouse wheel zoom
+- Click-and-drag panning
+- Color-coded nodes by step type
+- Arrow markers showing direction
+- Node limit (100) with warning
+- Color legend for step types
 
 ### 🎨 UI/UX
 - Dark mode default with light mode toggle
@@ -231,6 +318,12 @@ Click **"Parse & Analyze"**. Clawtrace will:
 | **Analyzer** | Risk score, confidence score, warning flags, detailed findings with evidence. |
 | **Compare** | Paste two traces. Click Compare. See side-by-side diff. |
 | **Export** | Download JSON/Markdown/HTML. Generate shareable URL. |
+| **Replay** | Cinematic playback of the trace with typing animations and speed control. |
+| **Heatmap** | Word-level hallucination highlighting with severity colors. |
+| **Radar** | Spider chart showing the AI's behavioral fingerprint. |
+| **Cost** | Token cost comparison across 20 models. |
+| **Bug Report** | One-click formatted reports for GitHub, Jira, or text. |
+| **Flow** | Interactive node graph of the AI's reasoning chain. |
 
 ### Step 4: Share (Optional)
 
@@ -340,7 +433,7 @@ clawtrace/
 ├── index.html              # Application entry point
 ├── src/
 │   ├── css/
-│   │   └── style.css       # Complete design system (~700 lines)
+│   │   └── style.css       # Complete design system (~1800 lines)
 │   └── js/
 │       ├── sanitizer.js    # Security foundation: escaping, validation
 │       ├── parser.js       # Multi-format parser with auto-detection
@@ -349,6 +442,12 @@ clawtrace/
 │       ├── comparison.js   # Side-by-side diff engine
 │       ├── export.js       # Multi-format export (JSON, MD, HTML)
 │       ├── share.js        # URL-based sharing (no server)
+│       ├── replay.js       # 🆕 Trace replay with typing animation
+│       ├── heatmap.js      # 🆕 Hallucination heatmap engine
+│       ├── radar.js        # 🆕 AI behavior radar chart (SVG)
+│       ├── costcalc.js     # 🆕 Token cost calculator (20 models)
+│       ├── bugreport.js    # 🆕 One-click bug report generator
+│       ├── flowgraph.js    # 🆕 Reasoning flow graph (SVG)
 │       └── app.js          # Main application orchestrator
 ├── assets/
 │   └── clawtrace-logo.png  # Logo
@@ -382,7 +481,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidel
 
 ## 🗺️ Roadmap
 
-### v1.0 (Current)
+### v1.0
 - [x] Multi-format input (JSON, YAML-like, text)
 - [x] Interactive timeline with filtering
 - [x] Reasoning analyzer with risk/confidence scores
@@ -397,26 +496,27 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidel
 - [x] Full accessibility
 - [x] Security audit
 
-### v1.1 (Planned)
-- [ ] Token cost estimation by model
+### v1.1 (Current)
+- [x] 🎬 Trace Replay Mode with typing animation and speed control
+- [x] 🔥 Hallucination Heatmap with word-level severity highlighting
+- [x] 🕸️ AI Behavior Radar Chart (SVG spider chart, 6 dimensions)
+- [x] 💰 Token Cost Calculator (20 models, 7 providers)
+- [x] 📋 One-Click Bug Report Generator (GitHub, Jira, text)
+- [x] 🌊 Reasoning Flow Graph (interactive SVG node graph)
+
+### v1.2 (Planned)
 - [ ] Timeline search/text filter
-- [ ] Step-to-step navigation
 - [ ] Bookmarkable steps
 - [ ] Keyboard shortcuts
 - [ ] Custom analysis rules
-- [ ] SVG logo & mascot
-
-### v1.2 (Planned)
 - [ ] Multi-trace session management
 - [ ] Local IndexedDB storage (opt-in)
 - [ ] Trace annotation/comments
-- [ ] Custom theme builder
-- [ ] Plugin system for custom analyzers
 
 ### v2.0 (Vision)
 - [ ] WebAssembly parser for massive traces
-- [ ] Visual graph view of tool call chains
-- [ ] Diff replay (animated step-through)
+- [ ] Custom theme builder
+- [ ] Plugin system for custom analyzers
 - [ ] OpenTelemetry trace format support
 - [ ] LangSmith/LangFuse trace import
 - [ ] Community pattern library
