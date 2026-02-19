@@ -566,7 +566,7 @@ A: Yes. MIT licensed. Copy the files, serve them. No attribution required (but a
 
 <div align="center">
 
-<img src="assets/clawtrace-logo.png" alt="Clawtrace" width="200">
+<img src="assets/logo.png" alt="Clawtrace" width="200">
 
 **Clawtrace** -- The Trace Explorer for OpenClaw Agents
 
