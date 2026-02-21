@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--
+        Clawtrace — AI Interaction & Reasoning Explorer
+        Built for OpenClaw agents and any AI system.
+        100% client-side. Zero network calls. Zero tracking.
+    -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'none';
+                   script-src 'self';
+                   style-src 'self' 'unsafe-inline';
+                   img-src 'self' data:;
+                   font-src 'self';
+                   connect-src 'none';
+                   frame-src 'none';
+                   object-src 'none';
+                   base-uri 'self';
+                   form-action 'none';">
+    <meta name="referrer" content="no-referrer">
+    <title>Clawtrace Showcase — Interactive Demo</title>
+    <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body>
+    <div class="showcase-banner">
+        <span class="showcase-badge">Showcase</span>
+        <span>Interactive demo &mdash; fake data, all features enabled. <strong>Nothing is saved or uploaded.</strong></span>
+        <a href="index.html" class="showcase-exit">Back to real app</a>
+    </div>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="app-header" role="banner">
+        <div class="header-inner">
+            <div class="logo-area" aria-label="Clawtrace logo">
+                <img src="assets/logo.png" alt="Clawtrace" class="logo-img" width="36" height="36">
+                <h1 class="logo-text">Claw<span class="accent">trace</span></h1>
+            </div>
+            <div class="header-right">
+                <span class="header-version">v2.0</span>
+                <button id="btn-theme-toggle" class="icon-btn" aria-label="Toggle light/dark theme" title="Toggle theme">
+                    <span aria-hidden="true">&#9790;</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar" role="navigation" aria-label="Module navigation">
+            <button id="btn-sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar" title="Toggle sidebar">
+                <span aria-hidden="true">&#9776;</span>
+            </button>
+            <nav class="sidebar-nav">
+                <!-- ...sidebar groups and buttons copied from index.html... -->
+            </nav>
+        </aside>
+        <main id="main-content" class="app-main" role="main">
+            <!-- ...views and sections copied from index.html... -->
+        </main>
+    </div>
+    <footer class="app-footer" role="contentinfo">
+        <p>Clawtrace v2.0.0 &mdash; 100% client-side &middot; zero tracking &middot; open source (MIT)</p>
+        <p class="footer-sub">Built for <a href="https://openclaw.ai/" target="_blank" rel="noopener">OpenClaw</a> &#x1F99E; agents &amp; any AI system.</p>
+        <p class="footer-sub" style="opacity:0.6;font-size:0.7rem;">Independent community project &middot; Not affiliated with the OpenClaw team</p>
+    </footer>
+    <script src="src/js/sanitizer.js" defer></script>
+    <script src="src/js/parser.js" defer></script>
+    <script src="src/js/timeline.js" defer></script>
+    <script src="src/js/analyzer.js" defer></script>
+    <script src="src/js/comparison.js" defer></script>
+    <script src="src/js/export.js" defer></script>
+    <script src="src/js/share.js" defer></script>
+    <script src="src/js/replay.js" defer></script>
+    <script src="src/js/heatmap.js" defer></script>
+    <script src="src/js/radar.js" defer></script>
+    <script src="src/js/costcalc.js" defer></script>
+    <script src="src/js/bugreport.js" defer></script>
+    <script src="src/js/flowgraph.js" defer></script>
+    <script src="src/js/session.js" defer></script>
+    <script src="src/js/toolprofiler.js" defer></script>
+    <script src="src/js/agentmap.js" defer></script>
+    <script src="src/js/channeldiff.js" defer></script>
+    <script src="src/js/routing.js" defer></script>
+    <script src="src/js/chatcmd.js" defer></script>
+    <script src="src/js/skillgraph.js" defer></script>
+    <script src="src/js/canvasreplay.js" defer></script>
+    <script src="src/js/voiceview.js" defer></script>
+    <script src="src/js/browserreplay.js" defer></script>
+    <script src="src/js/nodeactivity.js" defer></script>
+    <script src="src/js/crontimeline.js" defer></script>
+    <script src="src/js/injscan.js" defer></script>
+    <script src="src/js/sandbox.js" defer></script>
+    <script src="src/js/benchmark.js" defer></script>
+    <script src="src/js/failover.js" defer></script>
+    <script src="src/js/configrec.js" defer></script>
+    <script src="src/js/traceissue.js" defer></script>
+    <script src="src/js/traceshare.js" defer></script>
+    <script src="src/js/showcase-loader.js" defer></script>
+</body>
+</html>

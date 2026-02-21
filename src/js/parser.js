@@ -546,7 +546,11 @@ Clawtrace.Parser = (function () {
             switch (format) {
                 case 'json':
                     var parsed = safeJSONParse(cleaned);
-                    result = normalizeJSON(parsed);
+                    if (typeof Clawtrace.OTLP !== 'undefined' && Clawtrace.OTLP.detect(parsed)) {
+                        result = Clawtrace.OTLP.convert(parsed);
+                    } else {
+                        result = normalizeJSON(parsed);
+                    }
                     break;
                 case 'yaml':
                     result = parseYAMLLike(cleaned);

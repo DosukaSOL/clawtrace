@@ -52,6 +52,17 @@ Clawtrace.App = (function () {
     var TI = Clawtrace.TraceIssue;
     var TS = Clawtrace.TraceShare;
 
+    // v2.1 modules
+    var SCH = Clawtrace.Search;
+    var SHC = Clawtrace.Shortcuts;
+    var BK = Clawtrace.Bookmarks;
+    var ANN = Clawtrace.Annotations;
+    var CR = Clawtrace.CustomRules;
+    var STG = Clawtrace.Storage;
+    var WP = Clawtrace.WasmParser;
+    var PLG = Clawtrace.Plugins;
+    var PAT = Clawtrace.Patterns;
+
     /* ---- State ---- */
     var _currentView = 'landing';
     var _rawInput = '';
@@ -95,6 +106,31 @@ Clawtrace.App = (function () {
         CFG.init(dom.configrecContainer);
         TI.init(dom.traceissueContainer);
         TS.init(dom.traceshareContainer);
+
+        // v2.1 inits
+        SCH.init(dom.timelineContainer);
+        SHC.init(switchView, {
+            onFocusSearch: function () {
+                if (dom.searchInput) { dom.searchInput.focus(); }
+                switchView('timeline');
+            },
+            onExpandAll: function () { TL.expandAll(); },
+            onCollapseAll: function () { TL.collapseAll(); },
+            onNextMatch: function () { _updateSearchInfo(SCH.nextMatch()); },
+            onPrevMatch: function () { _updateSearchInfo(SCH.prevMatch()); },
+            onEscape: function () {
+                SCH.clear();
+                if (dom.searchInput) { dom.searchInput.value = ''; }
+                _updateSearchInfo({ total: 0, current: 0 });
+            }
+        });
+        BK.init(dom.timelineContainer, dom.bookmarksContainer);
+        ANN.init(dom.timelineContainer, dom.annotationsContainer);
+        CR.init(dom.customrulesContainer);
+        STG.init(dom.storageContainer, _handleStorageLoad);
+        PLG.init(dom.pluginsContainer);
+        PAT.init(dom.patternsContainer);
+
         applyStoredTheme();
         checkShareURL();
         setStatus('Welcome to Clawtrace — your AI trace explorer.');
@@ -186,6 +222,21 @@ Clawtrace.App = (function () {
         dom.configrecContainer = document.getElementById('configrec-container');
         dom.traceissueContainer = document.getElementById('traceissue-container');
         dom.traceshareContainer = document.getElementById('traceshare-container');
+
+        // v2.1 views
+        dom.bookmarksContainer = document.getElementById('bookmarks-container');
+        dom.annotationsContainer = document.getElementById('annotations-container');
+        dom.customrulesContainer = document.getElementById('customrules-container');
+        dom.storageContainer = document.getElementById('storage-container');
+        dom.pluginsContainer = document.getElementById('plugins-container');
+        dom.patternsContainer = document.getElementById('patterns-container');
+        dom.wasmProgressContainer = document.getElementById('wasm-progress-container');
+
+        // v2.1 search bar
+        dom.searchInput = document.getElementById('timeline-search');
+        dom.searchMatchCount = document.getElementById('search-match-count');
+        dom.btnSearchPrev = document.getElementById('btn-search-prev');
+        dom.btnSearchNext = document.getElementById('btn-search-next');
     }
 
     /**
@@ -250,6 +301,33 @@ Clawtrace.App = (function () {
         dom.timelineFilter.addEventListener('change', function () {
             TL.setFilter(dom.timelineFilter.value);
         });
+
+        // v2.1 search bar
+        if (dom.searchInput) {
+            dom.searchInput.addEventListener('input', function () {
+                _updateSearchInfo(SCH.search(dom.searchInput.value));
+            });
+            dom.searchInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    _updateSearchInfo(e.shiftKey ? SCH.prevMatch() : SCH.nextMatch());
+                } else if (e.key === 'Escape') {
+                    SCH.clear();
+                    dom.searchInput.value = '';
+                    _updateSearchInfo({ total: 0, current: 0 });
+                }
+            });
+        }
+        if (dom.btnSearchNext) {
+            dom.btnSearchNext.addEventListener('click', function () {
+                _updateSearchInfo(SCH.nextMatch());
+            });
+        }
+        if (dom.btnSearchPrev) {
+            dom.btnSearchPrev.addEventListener('click', function () {
+                _updateSearchInfo(SCH.prevMatch());
+            });
+        }
 
         // Comparison
         dom.btnCompare.addEventListener('click', handleCompare);
@@ -409,81 +487,128 @@ Clawtrace.App = (function () {
         setStatus('Parsing...');
         hideFeedback();
 
-        // Use setTimeout to allow UI update
-        setTimeout(function () {
-            try {
-                var result = P.parse(_rawInput);
-
-                if (!result.success) {
-                    showFeedback(result.error, 'error');
-                    setStatus('Parse failed.');
-                    return;
-                }
-
-                _traceData = result.data;
-
-                // Analyze
-                setStatus('Analyzing...');
-                _analysisResult = AN.analyze(_traceData);
-
-                // Render timeline
-                TL.init(dom.timelineContainer);
-                TL.render(_traceData);
-
-                // Render analyzer
-                renderAnalyzer(_analysisResult);
-
-                // Render new views
-                RPL.render(_traceData);
-                HM.render(_traceData, _analysisResult);
-                RDR.render(_traceData, _analysisResult);
-                CC.render(_traceData);
-                BR.render(_traceData, _analysisResult);
-                FG.render(_traceData);
-
-                // v2.0 views
-                SES.render(_traceData);
-                TP.render(_traceData);
-                AM.render(_traceData);
-                CHD.render(_traceData, _analysisResult);
-                RT.render(_traceData);
-                CMD.render(_traceData);
-                SKG.render(_traceData);
-                CVR.render(_traceData);
-                VV.render(_traceData);
-                BRR.render(_traceData);
-                NA.render(_traceData);
-                CRT.render(_traceData);
-                INJ.render(_traceData);
-                SBX.render(_traceData);
-                BEN.render(_traceData, _analysisResult);
-                FO.render(_traceData);
-                CFG.render(_traceData, _analysisResult);
-                TI.render(_traceData, _analysisResult);
-                TS.render(_traceData);
-
-                // Enable export buttons
-                dom.btnExportJSON.disabled = false;
-                dom.btnExportMd.disabled = false;
-                dom.btnExportHTML.disabled = false;
-                dom.btnShare.disabled = false;
-
-                var msg = 'Parsed ' + _traceData.steps.length + ' steps (' +
-                          result.format + ' format). Risk: ' +
-                          _analysisResult.riskScore + '/100, Confidence: ' +
-                          _analysisResult.confidenceScore + '/100.';
-                showFeedback(msg, 'success');
-                setStatus(msg);
-
-                // Auto-switch to timeline
-                switchView('timeline');
-
-            } catch (e) {
-                showFeedback('Unexpected error: ' + S.sanitizeString(e.message, 200), 'error');
-                setStatus('Error.');
-            }
-        }, 50);
+        // Use WasmParser — handles large traces asynchronously with progress UI
+        WP.parseAsync(_rawInput, dom.wasmProgressContainer, _onParseComplete);
     }
+
+    /**
+     * Shared render pipeline called after any successful parse (manual or storage load).
+     * @param {{success:boolean, data:Object|null, error:string|null, format:string}} result
+     */
+    function _onParseComplete(result) {
+        try {
+            if (!result.success) {
+                showFeedback(result.error, 'error');
+                setStatus('Parse failed.');
+                return;
+            }
+
+            _traceData = result.data;
+
+            // Analyze
+            setStatus('Analyzing...');
+            _analysisResult = AN.analyze(_traceData);
+
+            // Render timeline
+            TL.init(dom.timelineContainer);
+            TL.render(_traceData);
+
+            // Render analyzer
+            renderAnalyzer(_analysisResult);
+
+            // Render v1.1 views
+            RPL.render(_traceData);
+            HM.render(_traceData, _analysisResult);
+            RDR.render(_traceData, _analysisResult);
+            CC.render(_traceData);
+            BR.render(_traceData, _analysisResult);
+            FG.render(_traceData);
+
+            // Render v2.0 views
+            SES.render(_traceData);
+            TP.render(_traceData);
+            AM.render(_traceData);
+            CHD.render(_traceData, _analysisResult);
+            RT.render(_traceData);
+            CMD.render(_traceData);
+            SKG.render(_traceData);
+            CVR.render(_traceData);
+            VV.render(_traceData);
+            BRR.render(_traceData);
+            NA.render(_traceData);
+            CRT.render(_traceData);
+            INJ.render(_traceData);
+            SBX.render(_traceData);
+            BEN.render(_traceData, _analysisResult);
+            FO.render(_traceData);
+            CFG.render(_traceData, _analysisResult);
+            TI.render(_traceData, _analysisResult);
+            TS.render(_traceData);
+
+            // Render v2.1 views
+            BK.render(_traceData);
+            ANN.render(_traceData);
+            CR.render(_traceData);
+            STG.render(_traceData);
+            PLG.render();
+            PAT.render(_traceData);
+
+            // Enable export buttons
+            dom.btnExportJSON.disabled = false;
+            dom.btnExportMd.disabled = false;
+            dom.btnExportHTML.disabled = false;
+            dom.btnShare.disabled = false;
+
+            // Clear any leftover search state
+            if (dom.searchInput) { dom.searchInput.value = ''; }
+            SCH.clear();
+            _updateSearchInfo({ total: 0, current: 0 });
+
+            var msg = 'Parsed ' + _traceData.steps.length + ' steps (' +
+                      result.format + ' format). Risk: ' +
+                      _analysisResult.riskScore + '/100, Confidence: ' +
+                      _analysisResult.confidenceScore + '/100.';
+            showFeedback(msg, 'success');
+            setStatus(msg);
+
+            // Auto-switch to timeline
+            switchView('timeline');
+
+        } catch (e) {
+            showFeedback('Unexpected error: ' + S.sanitizeString(e.message, 200), 'error');
+            setStatus('Error.');
+        }
+    }
+
+    /**
+     * Called by Storage module when user loads a saved trace.
+     * @param {Object} traceData - Pre-parsed TraceData object
+     */
+    function _handleStorageLoad(traceData) {
+        _traceData = traceData;
+        _rawInput = '';
+        // Wrap in a parse-result style object so _onParseComplete can handle it
+        _onParseComplete({
+            success: true,
+            data: traceData,
+            error: null,
+            format: (traceData.meta && traceData.meta.format) || 'storage'
+        });
+    }
+
+    /**
+     * Updates the search match counter in the UI.
+     * @param {{total:number, current:number}} state
+     */
+    function _updateSearchInfo(state) {
+        if (!dom.searchMatchCount) { return; }
+        if (!state || state.total === 0) {
+            S.safeSetText(dom.searchMatchCount, '');
+        } else {
+            S.safeSetText(dom.searchMatchCount, state.current + ' / ' + state.total);
+        }
+    }
+
 
     function handleClear() {
         _rawInput = '';
@@ -829,6 +954,14 @@ Clawtrace.App = (function () {
                 CFG.render(_traceData, _analysisResult);
                 TI.render(_traceData, _analysisResult);
                 TS.render(_traceData);
+
+                // v2.1 views
+                BK.render(_traceData);
+                ANN.render(_traceData);
+                CR.render(_traceData);
+                STG.render(_traceData);
+                PLG.render();
+                PAT.render(_traceData);
 
                 dom.btnExportJSON.disabled = false;
                 dom.btnExportMd.disabled = false;

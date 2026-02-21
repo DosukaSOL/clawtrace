@@ -90,7 +90,7 @@ Clawtrace.Sanitizer = (function () {
         var safeTags = [
             'div', 'span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
             'ul', 'ol', 'li', 'dl', 'dt', 'dd',
-            'pre', 'code', 'em', 'strong', 'small',
+            'pre', 'code', 'kbd', 'em', 'strong', 'small',
             'section', 'article', 'header', 'footer', 'nav', 'main',
             'button', 'label', 'input', 'select', 'option', 'textarea',
             'table', 'thead', 'tbody', 'tr', 'th', 'td',
@@ -114,6 +114,7 @@ Clawtrace.Sanitizer = (function () {
             'data-step', 'data-view', 'data-speed', 'data-format',
             'type', 'readonly', 'disabled',
             'for', 'name', 'value', 'rows', 'maxlength',
+            'placeholder', 'checked',
             'style'
         ];
 

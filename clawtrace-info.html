@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clawtrace — AI Interaction Trace Explorer</title>
+  <link rel="icon" href="assets/logo.png">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      background: #181818;
+      color: #fff;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    .animated-bg {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 0;
+      background: linear-gradient(120deg, #181818 0%, #ff6600 100%);
+      overflow: hidden;
+    }
+    .logo {
+      display: block;
+      margin: 80px auto 32px auto;
+      width: 220px;
+      height: 220px;
+      object-fit: contain;
+      background: none;
+      box-shadow: none;
+    }
+    .center {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 32px;
+      background: rgba(24,24,24,0.92);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px #ff660022, 0 1px 8px #00000033;
+      margin-top: 48px;
+      margin-bottom: 48px;
+    }
+    h1 {
+      font-size: 4.2rem;
+      margin: 0 0 24px 0;
+      letter-spacing: 2px;
+      font-weight: 800;
+      line-height: 1.1;
+      text-shadow: 0 2px 16px #ff660033, 0 1px 8px #00000033;
+      word-spacing: 8px;
+    }
+    h2 {
+      font-size: 2rem;
+      color: #fff;
+      margin-bottom: 48px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-shadow: 0 1px 8px #ff660033;
+    }
+    .desc {
+      max-width: 700px;
+      margin: 0 auto 48px auto;
+      font-size: 1.22rem;
+      color: #eaeaea;
+      line-height: 1.8;
+      background: rgba(34,34,34,0.85);
+      border-radius: 16px;
+      padding: 24px 32px;
+      box-shadow: 0 2px 16px #ff660033;
+      font-weight: 400;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 36px;
+      margin-bottom: 56px;
+      justify-content: center;
+    }
+    .feature {
+      background: linear-gradient(120deg, #232323cc 60%, #ff660022 100%);
+      border-radius: 20px;
+      padding: 36px 40px;
+      min-width: 220px;
+      max-width: 360px;
+      box-shadow: 0 2px 24px #ff660033;
+      color: #fff;
+      font-size: 1.13rem;
+      text-align: left;
+      border: 1px solid #ff660044;
+      font-weight: 500;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .feature:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 8px 32px #ff660055;
+    }
+    .feature strong {
+      color: #ff6600;
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 28px;
+      margin-bottom: 48px;
+    }
+    .links a {
+      background: linear-gradient(90deg, #ff6600 60%, #ff8800 100%);
+      color: #fff;
+      padding: 16px 36px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      box-shadow: 0 2px 16px #ff660033;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+      font-size: 1.13rem;
+      letter-spacing: 0.5px;
+    }
+    .links a:hover {
+      background: linear-gradient(90deg, #ff8800 60%, #ff6600 100%);
+      box-shadow: 0 8px 32px #ff660055;
+      transform: translateY(-2px) scale(1.04);
+    }
+    .footer {
+      text-align: center;
+      color: #aaa;
+      font-size: 1.08rem;
+      margin-top: 64px;
+      margin-bottom: 32px;
+      letter-spacing: 0.2px;
+    }
+    /* Animated background effect */
+    .animated-bg canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="animated-bg">
+    <canvas id="bg-canvas"></canvas>
+  </div>
+    <div class="center">
+      <img src="assets/logo.png" alt="Clawtrace Logo" style="height: 80px; margin-bottom: 18px;">
+      <h1 style="font-size:3.2rem; margin-bottom:8px; letter-spacing:2px; font-weight:800;">
+        <span style="color:#fff;">CLAW</span><span style="color:#ff6600;">TRACE</span>
+      </h1>
+      <div class="desc" style="margin-bottom:32px;">
+        <b>Clawtrace</b> is a zero-dependency, client-side trace visualizer for security, research, and development. <br>Open source, privacy-first, and built for modern workflows.
+      </div>
+      <!-- Animated header underline -->
+      <div style="height:4px; width:120px; margin:0 auto 32px auto; background:linear-gradient(90deg,#ff6600,#ff8800); border-radius:2px; animation: pulse 1.8s infinite alternate;"></div>
+      <!-- Works With section -->
+      <h2 style="font-size:1.5rem; margin-bottom:18px; color:#ff6600;">Works With</h2>
+      <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:18px; margin-bottom:32px;">
+        <div style="background:#232323cc; border-radius:12px; padding:18px 24px; display:flex; align-items:center; gap:12px; min-width:120px;">
+          <img src="assets/icon-browser.png" alt="Browser" style="height:32px;">Browser
+        </div>
+        <div style="background:#232323cc; border-radius:12px; padding:18px 24px; display:flex; align-items:center; gap:12px; min-width:120px;">
+          <img src="assets/icon-macos.png" alt="macOS" style="height:32px;">macOS
+        </div>
+        <div style="background:#232323cc; border-radius:12px; padding:18px 24px; display:flex; align-items:center; gap:12px; min-width:120px;">
+          <img src="assets/icon-linux.png" alt="Linux" style="height:32px;">Linux
+        </div>
+        <div style="background:#232323cc; border-radius:12px; padding:18px 24px; display:flex; align-items:center; gap:12px; min-width:120px;">
+          <img src="assets/icon-windows.png" alt="Windows" style="height:32px;">Windows
+        </div>
+      </div>
+      <!-- What It Does section -->
+      <h2 style="font-size:1.5rem; margin-bottom:18px; color:#ff6600;">What It Does</h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:24px; margin-bottom:32px;">
+        <div style="background:#232323cc; border-radius:16px; padding:24px; text-align:center;">
+          <img src="assets/icon-visualize.png" alt="Visualize" style="height:36px; margin-bottom:8px;">
+          <b>Visualize Code Traces</b><br>Interactive, modern visualizer for execution flows.
+        </div>
+        <div style="background:#232323cc; border-radius:16px; padding:24px; text-align:center;">
+          <img src="assets/icon-security.png" alt="Security" style="height:36px; margin-bottom:8px;">
+          <b>Security & Research</b><br>Built for privacy, auditing, and advanced analysis.
+        </div>
+        <div style="background:#232323cc; border-radius:16px; padding:24px; text-align:center;">
+          <img src="assets/icon-open.png" alt="Open Source" style="height:36px; margin-bottom:8px;">
+          <b>Open Source</b><br>MIT licensed, transparent, and community-driven.
+        </div>
+        <div style="background:#232323cc; border-radius:16px; padding:24px; text-align:center;">
+          <img src="assets/icon-fast.png" alt="Fast" style="height:36px; margin-bottom:8px;">
+          <b>Zero Dependencies</b><br>Runs natively in your browser, no installs or setup.
+        </div>
+      </div>
+      <!-- Showcase section -->
+      <h2 style="font-size:1.5rem; margin-bottom:18px; color:#ff6600;">Showcase</h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:24px; margin-bottom:32px;">
+        <div style="background:#232323cc; border-radius:16px; padding:24px; text-align:center;">
+          <b>OpenClaw Trace Explorer</b><br><a href="https://github.com/openclaw-ai/openclaw" target="_blank" style="color:#ff6600;">View Project</a>
+        </div>
+        <div style="background:#232323cc; border-radius:16px; padding:24px; text-align:center;">
+          <b>DosukaDev Security Tools</b><br><a href="https://x.com/DosukaDev" target="_blank" style="color:#ff6600;">View Profile</a>
+        </div>
+        <div style="background:#232323cc; border-radius:16px; padding:24px; text-align:center;">
+          <b>Community Visualizers</b><br><a href="https://github.com/DosukaSOL/clawtrace" target="_blank" style="color:#ff6600;">View on GitHub</a>
+        </div>
+      </div>
+      <!-- Links section -->
+      <div class="links">
+        <a href="https://github.com/DosukaSOL/clawtrace" target="_blank">Clawtrace GitHub</a>
+        <a href="https://x.com/openclaw" target="_blank">OpenClaw X</a>
+        <a href="https://github.com/openclaw-ai/openclaw" target="_blank">OpenClaw GitHub</a>
+        <a href="https://x.com/DosukaDev" target="_blank">DosukaDev X</a>
+      </div>
+      <div class="footer">
+        &copy; 2026 DosukaDev. Clawtrace is open source and free to use.<br>
+        Inspired by <a href="https://openclaw.ai" target="_blank" style="color:#ff6600;text-decoration:underline;">openclaw.ai</a>
+      </div>
+    </div>
+  <script>
+    // Radar-style animated background (scanning effect)
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let w = window.innerWidth, h = window.innerHeight;
+    canvas.width = w;
+    canvas.height = h;
+    let t = 0;
+    function drawRadar() {
+      ctx.clearRect(0,0,w,h);
+      const cx = w/2, cy = h/2;
+      const radius = Math.min(w,h)*0.38;
+      // Draw radar circles
+      for(let i=1;i<=4;i++){
+        ctx.beginPath();
+        ctx.arc(cx,cy,radius*i/4,0,2*Math.PI);
+        ctx.strokeStyle = `rgba(255,102,0,${0.13+0.04*i})`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      // Draw radar lines
+      for(let i=0;i<4;i++){
+        ctx.beginPath();
+        ctx.moveTo(cx,cy);
+        let angle = Math.PI/2*i;
+        ctx.lineTo(cx+radius*Math.cos(angle),cy+radius*Math.sin(angle));
+        ctx.strokeStyle = 'rgba(255,102,0,0.18)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      // Draw scanning sweep
+      let sweepAngle = ((t/60)%360)*Math.PI/180;
+      ctx.save();
+      ctx.translate(cx,cy);
+      ctx.rotate(sweepAngle);
+      ctx.beginPath();
+      ctx.moveTo(0,0);
+      ctx.arc(0,0,radius,0,Math.PI/8);
+      ctx.lineTo(0,0);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(255,102,0,0.18)';
+      ctx.fill();
+      ctx.restore();
+      // Draw sweep highlight
+      ctx.save();
+      ctx.translate(cx,cy);
+      ctx.rotate(sweepAngle);
+      ctx.beginPath();
+      ctx.moveTo(0,0);
+      ctx.arc(0,0,radius,0,Math.PI/64);
+      ctx.lineTo(0,0);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(255,255,255,0.13)';
+      ctx.fill();
+      ctx.restore();
+      // Draw radar blips
+      for(let i=0;i<6;i++){
+        let blipAngle = sweepAngle - Math.PI/8 + Math.PI/24*i;
+        let blipRadius = radius*(0.3+0.6*Math.abs(Math.sin(t/120+i)));
+        ctx.beginPath();
+        ctx.arc(cx+blipRadius*Math.cos(blipAngle),cy+blipRadius*Math.sin(blipAngle),6,0,2*Math.PI);
+        ctx.fillStyle = 'rgba(255,102,0,0.85)';
+        ctx.fill();
+      }
+      t++;
+      setTimeout(drawRadar, 1000/60); // 60fps
+    }
+    drawRadar();
+    window.addEventListener('resize',()=>{
+      w=window.innerWidth;h=window.innerHeight;
+      canvas.width=w;canvas.height=h;
+    });
+  </script>
+</body>
+</html>

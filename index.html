@@ -36,7 +36,7 @@
                 <h1 class="logo-text">Claw<span class="accent">trace</span></h1>
             </div>
             <div class="header-right">
-                <span class="header-version">v2.0</span>
+                <span class="header-version">v2.1</span>
                 <button id="btn-theme-toggle" class="icon-btn" aria-label="Toggle light/dark theme" title="Toggle theme">
                     <span aria-hidden="true">&#9790;</span>
                 </button>
@@ -154,6 +154,28 @@
                 </div>
 
                 <div class="sidebar-group">
+                    <div class="sidebar-group-title">v2.1 Features</div>
+                    <button class="sidebar-btn" data-view="bookmarks">
+                        <span class="sb-icon">&#x2B50;</span><span class="sb-label">Bookmarks</span>
+                    </button>
+                    <button class="sidebar-btn" data-view="annotations">
+                        <span class="sb-icon">&#x1F4DD;</span><span class="sb-label">Annotations</span>
+                    </button>
+                    <button class="sidebar-btn" data-view="customrules">
+                        <span class="sb-icon">&#x1F527;</span><span class="sb-label">Custom Rules</span>
+                    </button>
+                    <button class="sidebar-btn" data-view="storage">
+                        <span class="sb-icon">&#x1F4BE;</span><span class="sb-label">Saved Traces</span>
+                    </button>
+                    <button class="sidebar-btn" data-view="plugins">
+                        <span class="sb-icon">&#x1F9E9;</span><span class="sb-label">Plugins</span>
+                    </button>
+                    <button class="sidebar-btn" data-view="patterns">
+                        <span class="sb-icon">&#x1F3AF;</span><span class="sb-label">Patterns</span>
+                    </button>
+                </div>
+
+                <div class="sidebar-group">
                     <div class="sidebar-group-title">Export</div>
                     <button class="sidebar-btn" data-view="export">
                         <span class="sb-icon">&#x1F4E4;</span><span class="sb-label">Export</span>
@@ -199,8 +221,8 @@
                 <div class="landing-features">
                     <div class="landing-feature-card">
                         <span class="lf-icon">&#x1F4CA;</span>
-                        <h3>30 Analysis Views</h3>
-                        <p>Timeline, heatmap, radar, flow graph, cost calculator, injection scanner, and 24 more.</p>
+                        <h3>36 Analysis Views</h3>
+                        <p>Timeline, heatmap, radar, flow graph, cost calculator, injection scanner, and 30 more.</p>
                     </div>
                     <div class="landing-feature-card">
                         <span class="lf-icon">&#x1F510;</span>
@@ -254,6 +276,8 @@
                     </div>
                 </div>
 
+                <div id="wasm-progress-container" hidden></div>
+
                 <div class="input-actions">
                     <button id="btn-parse" class="btn btn-primary" disabled>Parse &amp; Analyze</button>
                     <button id="btn-clear-input" class="btn btn-ghost">Clear</button>
@@ -281,6 +305,12 @@
                             <option value="assistant">Assistant Messages</option>
                         </select>
                     </label>
+                    <div class="search-bar" role="search" aria-label="Search timeline">
+                        <button id="btn-search-prev" class="btn btn-sm" aria-label="Previous match" title="Previous match (Shift+Enter)">&#x25B2;</button>
+                        <input type="search" id="timeline-search" class="search-input" placeholder="Search steps..." aria-label="Search timeline steps" maxlength="200">
+                        <button id="btn-search-next" class="btn btn-sm" aria-label="Next match" title="Next match (Enter)">&#x25BC;</button>
+                        <span id="search-match-count" class="search-match-count" aria-live="polite"></span>
+                    </div>
                 </div>
                 <div id="timeline-container" class="timeline-container" role="list" aria-label="Timeline steps"></div>
             </section>
@@ -371,12 +401,49 @@
             <section id="view-traceissue" class="view" aria-labelledby="traceissue-heading" hidden><h2 id="traceissue-heading" class="view-title">Trace-to-Issue Pipeline</h2><p class="view-desc">Generate GitHub-ready issue templates with steps to reproduce.</p><div id="traceissue-container" role="region" aria-label="Trace issue generator"></div></section>
             <section id="view-traceshare" class="view" aria-labelledby="traceshare-heading" hidden><h2 id="traceshare-heading" class="view-title">Anonymized Trace Export</h2><p class="view-desc">Detect PII (emails, IPs, API keys) and export a redacted copy.</p><div id="traceshare-container" role="region" aria-label="Trace anonymizer"></div></section>
 
+            <!-- ===== v2.1 VIEWS ===== -->
+            <section id="view-bookmarks" class="view" aria-labelledby="bookmarks-heading" hidden>
+                <h2 id="bookmarks-heading" class="view-title">&#x2B50; Bookmarks</h2>
+                <p class="view-desc">Bookmark important steps and jump back to them anytime. Persisted across sessions.</p>
+                <div id="bookmarks-container" role="region" aria-label="Bookmarked steps"></div>
+            </section>
+
+            <section id="view-annotations" class="view" aria-labelledby="annotations-heading" hidden>
+                <h2 id="annotations-heading" class="view-title">&#x1F4DD; Annotations</h2>
+                <p class="view-desc">Add private notes to individual trace steps. Stored locally in your browser.</p>
+                <div id="annotations-container" role="region" aria-label="Step annotations"></div>
+            </section>
+
+            <section id="view-customrules" class="view" aria-labelledby="customrules-heading" hidden>
+                <h2 id="customrules-heading" class="view-title">&#x1F527; Custom Analysis Rules</h2>
+                <p class="view-desc">Define your own regex-based detection rules and run them against any trace.</p>
+                <div id="customrules-container" role="region" aria-label="Custom rules"></div>
+            </section>
+
+            <section id="view-storage" class="view" aria-labelledby="storage-heading" hidden>
+                <h2 id="storage-heading" class="view-title">&#x1F4BE; Saved Traces</h2>
+                <p class="view-desc">Opt-in local trace library. Save, label and reload traces with IndexedDB — entirely in your browser.</p>
+                <div id="storage-container" role="region" aria-label="Saved traces"></div>
+            </section>
+
+            <section id="view-plugins" class="view" aria-labelledby="plugins-heading" hidden>
+                <h2 id="plugins-heading" class="view-title">&#x1F9E9; Plugin Manager</h2>
+                <p class="view-desc">Manage built-in plugins and register custom analyzers via the console API.</p>
+                <div id="plugins-container" role="region" aria-label="Plugin manager"></div>
+            </section>
+
+            <section id="view-patterns" class="view" aria-labelledby="patterns-heading" hidden>
+                <h2 id="patterns-heading" class="view-title">&#x1F3AF; Community Pattern Library</h2>
+                <p class="view-desc">22 curated detection patterns across LLM Behavior, Security, Performance, Quality, and OpenClaw.</p>
+                <div id="patterns-container" role="region" aria-label="Pattern library"></div>
+            </section>
+
         </main>
     </div>
 
     <!-- ===== FOOTER ===== -->
     <footer class="app-footer" role="contentinfo">
-        <p>Clawtrace v2.0.0 &mdash; 100% client-side &middot; zero tracking &middot; open source (MIT)</p>
+        <p>Clawtrace v2.1.0 &mdash; 100% client-side &middot; zero tracking &middot; open source (MIT)</p>
         <p class="footer-sub">Built for <a href="https://openclaw.ai/" target="_blank" rel="noopener">OpenClaw</a> &#x1F99E; agents &amp; any AI system.</p>
         <p class="footer-sub" style="opacity:0.6;font-size:0.7rem;">Independent community project &middot; Not affiliated with the OpenClaw team</p>
     </footer>
@@ -414,6 +481,16 @@
     <script src="src/js/configrec.js" defer></script>
     <script src="src/js/traceissue.js" defer></script>
     <script src="src/js/traceshare.js" defer></script>
+    <script src="src/js/otlp.js" defer></script>
+    <script src="src/js/search.js" defer></script>
+    <script src="src/js/shortcuts.js" defer></script>
+    <script src="src/js/bookmarks.js" defer></script>
+    <script src="src/js/annotations.js" defer></script>
+    <script src="src/js/customrules.js" defer></script>
+    <script src="src/js/storage.js" defer></script>
+    <script src="src/js/wasmparser.js" defer></script>
+    <script src="src/js/plugins.js" defer></script>
+    <script src="src/js/patterns.js" defer></script>
     <script src="src/js/app.js" defer></script>
 </body>
 </html>
